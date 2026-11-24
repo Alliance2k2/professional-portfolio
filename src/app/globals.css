@@ -356,8 +356,8 @@ small {
   top: 0;
 }
 .core {
-  width: 116px;
-  height: 116px;
+  width: 148px;
+  height: 148px;
   background: var(--bg);
   border: 1px solid #14b8a670;
   box-shadow: 0 0 70px #14b8a618;
@@ -366,21 +366,13 @@ small {
   top: 50%;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
-  letter-spacing: -0.12em;
-  color: var(--accent);
+  overflow: hidden;
+  padding: 4px;
 }
-.core span {
-  font:
-    0.42rem Consolas,
-    monospace;
-  letter-spacing: 0.09em;
-  margin-top: 0;
-  color: var(--muted);
+.hero-portrait {
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 82%;
 }
 .orbit-label {
   position: absolute;
@@ -995,25 +987,19 @@ small {
 .prose ul {
   padding-left: 22px;
 }
-.portrait-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  min-height: 260px;
-  background: var(--surface);
+.portrait-frame {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 8px;
   margin-bottom: 32px;
+  background: var(--surface);
+  box-shadow: 0 20px 55px #00000020;
 }
-.portrait-placeholder span {
-  font-size: 5rem;
-  color: var(--accent);
-  letter-spacing: -0.12em;
-}
-.portrait-placeholder p {
-  font-size: 0.8rem;
-  color: var(--muted);
+.about-portrait {
+  object-fit: cover;
+  object-position: center 82%;
 }
 .two-columns {
   display: grid;
@@ -1407,6 +1393,10 @@ input::placeholder {
   .orbit-one {
     width: 170px;
     height: 170px;
+  }
+  .core {
+    width: 126px;
+    height: 126px;
   }
   .orbit-two {
     width: 255px;

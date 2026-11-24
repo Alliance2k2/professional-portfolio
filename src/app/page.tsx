@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Suspense } from 'react';
 import {
   MapPin,
@@ -69,7 +70,14 @@ export default function Home() {
             <div className="axis axis-x" />
             <div className="axis axis-y" />
             <div className="core">
-              IA<span>IRIGENERA ALLIANCE</span>
+              <Image
+                src="/alliance-irigenera.jpg"
+                alt=""
+                fill
+                sizes="(max-width: 760px) 126px, 148px"
+                className="hero-portrait"
+                preload
+              />
             </div>
             <span className="orbit-label label-data">
               <Database size={17} /> Data science
@@ -96,8 +104,8 @@ export default function Home() {
             </span>
           </div>
           <span className="sr-only">
-            Original IA monogram. A professional portrait will be added when
-            provided.
+            Portrait of Irigenera Alliance at the center, surrounded by labels
+            for data science, research and engineering.
           </span>
         </div>
       </section>

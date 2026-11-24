@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { PageIntro, Timeline } from '@/components/shared';
@@ -134,9 +135,14 @@ export default async function SectionPage({
             </div>
           </div>
           <aside>
-            <div className="portrait-placeholder">
-              <span aria-hidden="true">IA</span>
-              <p>Professional portrait to be added</p>
+            <div className="portrait-frame">
+              <Image
+                src="/alliance-irigenera.jpg"
+                alt="Studio portrait of Irigenera Alliance wearing a camel-colored blazer."
+                fill
+                sizes="(max-width: 760px) calc(100vw - 40px), 33vw"
+                className="about-portrait"
+              />
             </div>
             <div className="info-panel">
               <h2>
