@@ -308,7 +308,9 @@ export const interests = [
   'Citizen science',
   'Machine learning',
   'Geospatial analytics',
+  'Financial analytics',
   'Sustainable development',
+  'Baking',
 ];
 export const routes = [
   'about',
