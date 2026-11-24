@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+.env*
+!.env.example
+.npm-cache/
+coverage/
+playwright-report/
+test-results/
+*.tsbuildinfo
+.openai/
