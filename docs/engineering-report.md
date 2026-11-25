@@ -2,7 +2,7 @@
 
 ## Executive summary
 
-Created the public `Alliance2k2/professional-portfolio` GitHub repository with the requested description, initialized README and MIT license. Implemented a Next.js portfolio in the supplied Windows workspace. The application works without a database or paid model API. Application hosting is not yet deployed.
+Created the public `Alliance2k2/professional-portfolio` GitHub repository with the requested description, initialized README and MIT license. Implemented a Next.js portfolio in the supplied Windows workspace. The application works without a database or paid model API. The production site is hosted at `https://professional-portfolio-three-virid.vercel.app`, and the production `SITE_URL` is configured to this origin. Vercel Authentication remains enabled for preview deployments.
 
 ## Implemented features
 
@@ -44,17 +44,17 @@ Most routes are statically prerendered; client JavaScript is limited to interact
 
 - Email delivery integration exists but real delivery and platform rate limiting are unconfigured and untested. The verified default is the direct-email fallback.
 - The original supplied CV is not a public download because it contains a phone number; the online résumé prints to PDF.
-- No original portrait, reviewed screenshots, thesis figures, thesis PDF, DOI records or certificate documents were supplied. Placeholders and missing-material notes are explicit.
+- The supplied portrait appears in the home hero and About page. Reviewed screenshots, thesis figures, thesis PDF, DOI records and certificate documents have not been supplied; those missing-material notes remain explicit.
 - Research publication status and the production-optimization implementation are not independently verified. Project descriptions state their provenance and limits.
 - GitHub live fetching depends on deployment egress and public API limits; failure does not break the site. This portfolio does not independently rerun the linked projects’ tests.
 - No reviewed article is published. The MDX infrastructure is implemented; publication awaits author review.
-- Native Vercel deployment, real-domain canonical metadata, email-provider behavior and Lighthouse scores are not verified. Local browser results do not establish hosted performance.
+- The Vercel production deployment and public production URL are verified. The production `SITE_URL` enables canonical metadata and the sitemap. Email-provider behavior and Lighthouse scores remain unverified.
 - No persistent RAG/vector pipeline is implemented in this portfolio. Alliance AI is labeled as local search.
 
 ## Assets and configuration needed
 
-A real portrait, public-safe CV PDF or explicit telephone-disclosure approval, reviewed project screenshots, thesis/manuscript and figures, certification documents if desired, reviewed articles, the final domain, and optional email/provider rate-limit configuration.
+A public-safe CV PDF or explicit telephone-disclosure approval, reviewed project screenshots, thesis/manuscript and figures, certification documents if desired, reviewed articles, an optional custom domain, and optional email/provider rate-limit configuration.
 
 ## Deployment and next steps
 
-Follow the README to import the repository into Vercel, set Node.js 24 and `SITE_URL`, build a preview and review it before public promotion. Keep email delivery disabled until both provider configuration and shared deployment-wide rate limiting are verified. Validate the actual domain, contact delivery, metadata, privacy wording and Lighthouse scores on hosting. Author review and real source assets are the next content priorities.
+The repository is connected to Vercel: pushes to `main` deploy production, while preview deployments remain protected by Vercel Authentication. Keep email delivery disabled until both provider configuration and shared deployment-wide rate limiting are verified. Validate contact delivery, metadata, privacy wording and Lighthouse scores on hosting. Author review and remaining content assets are the next priorities.

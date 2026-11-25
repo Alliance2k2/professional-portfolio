@@ -38,7 +38,7 @@ For an existing Windows Edge installation, set `PLAYWRIGHT_CHANNEL=msedge` inste
 - `content/blog`: unpublished draft templates. Public GitHub source includes these outlines; they are not published as authored articles on the website.
 - `tests`: content, validation, component and API tests plus desktop/mobile Playwright and axe checks.
 
-The site uses CSS transitions with reduced-motion support rather than adding an animation runtime. No charts are displayed without verified data. The home hero and flagship illustration are original CSS compositions, not research evidence or a portrait. No image-generation or paid service is needed.
+The site uses CSS transitions with reduced-motion support rather than adding an animation runtime. No charts are displayed without verified data. The home hero pairs the supplied portrait with an original CSS composition; the flagship illustration is conceptual, not research evidence. No image-generation or paid service is needed.
 
 ## Updating content
 
@@ -56,16 +56,13 @@ To enable email delivery, configure `RESEND_API_KEY` and a verified `CONTACT_FRO
 
 Server-side Zod validation, same-origin browser checks, a honeypot, input-length limits and a provider timeout are implemented. Success means the email provider acknowledged acceptance, not proof of inbox delivery. Resend is optional; direct email works without it. No secret is sent to the client.
 
-## Deployment readiness
+## Hosting
 
-This project targets native Next.js hosting on Vercel. It has not been deployed by this task. No Sites hosting resources are needed for this requested stack.
+The production site is hosted at [professional-portfolio-three-virid.vercel.app](https://professional-portfolio-three-virid.vercel.app). The Vercel project is connected to the public `Alliance2k2/professional-portfolio` GitHub repository; pushes to `main` deploy to production, and preview deployments require Vercel Authentication. No custom domain is configured.
 
-1. Push reviewed source to the `Alliance2k2/professional-portfolio` repository.
-2. Import the repository into Vercel, choose Next.js and Node.js 24. Use `npm ci` and `npm run build`.
-3. Set `SITE_URL` to the real HTTPS origin without a trailing slash. This enables canonical URLs and the sitemap. No production domain is invented.
-4. Keep contact delivery disabled until the provider and deployment-wide limiter are configured and verified. Leave `NEXT_PUBLIC_ASSISTANT_ENABLED=true`, or set it to `false` at build time to remove the assistant UI.
-5. Deploy a preview and review the actual content, portrait placeholder, email links and public-safe résumé. Verify real-domain metadata, social card, mobile layout and provider behavior.
-6. Promote only with owner authorization. Measure Lighthouse on the hosted build; scores are targets, not claims.
+The production `SITE_URL` is set to the HTTPS site origin for canonical metadata and the sitemap. For local builds, use `npm ci` and `npm run build`.
+
+Keep contact delivery disabled until the provider and deployment-wide limiter are configured and verified. Leave `NEXT_PUBLIC_ASSISTANT_ENABLED=true`, or set it to `false` at build time to remove the assistant UI. Review contact behavior, metadata and privacy wording on the hosted site. Lighthouse scores have not been measured and are not claimed.
 
 GitHub repository creation is separate from application deployment. The repository is public and MIT-licensed. Avoid committing private CVs, `.env` files, tokens or participant data.
 
@@ -73,4 +70,4 @@ GitHub repository creation is separate from application deployment. The reposito
 
 Public content is drawn from the supplied CV and development brief. CS-IRCFS and Arrowstack Identity READMEs were inspected through the connected GitHub service on 24 November 2026. Their implementation descriptions are attributed to those sources; their tests were not independently rerun here. No live demo, paper acceptance, employment outcome, research impact or certification document is invented.
 
-Needed assets: a real portrait, public-safe CV PDF, reviewed thesis/manuscript and research figures, reviewed project screenshots and author-approved articles. Production email, domain, rate limiting and external delivery remain deployment configuration work. See `docs/engineering-report.md` for actual verification results.
+Remaining content assets: a public-safe CV PDF, reviewed thesis/manuscript and research figures, reviewed project screenshots and author-approved articles. Production email delivery and deployment-wide rate limiting remain unconfigured; a custom domain is optional. See `docs/engineering-report.md` for verification limits.
