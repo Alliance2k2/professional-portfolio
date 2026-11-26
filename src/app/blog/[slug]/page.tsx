@@ -8,6 +8,10 @@ import { notFound } from 'next/navigation';
 import { PageIntro } from '@/components/shared';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
+// The root layout uses a per-request CSP nonce. Rendering blog slugs on demand
+// also lets unpublished/unknown slugs reach notFound() without static fallback.
+export const dynamic = 'force-dynamic';
 export async function generateStaticParams() {
   return (await getArticles()).map((a) => ({ slug: a.slug }));
 }
@@ -37,6 +41,7 @@ export default async function BlogArticle({
   const articles = await getArticles();
   const a = articles.find((a) => a.slug === slug);
   if (!a) notFound();
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -47,6 +52,7 @@ export default async function BlogArticle({
   return (
     <article className="container page-content">
       <script
+        nonce={nonce}
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(schema).replace(/</g, '\\u003c'),

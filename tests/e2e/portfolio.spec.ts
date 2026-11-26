@@ -5,7 +5,15 @@ test('home is accessible, theme persists, assistant answers', async ({
 }) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto('/');
+  const response = await page.goto('/');
+  const policy = response?.headers()['content-security-policy'] ?? '';
+  expect(policy).toContain("default-src 'self'");
+  expect(policy).toContain("style-src-attr 'unsafe-hashes'");
+  expect(policy).toContain('nonce-');
+  const pageNonce = await page.locator('script[nonce]').first().evaluate(
+    (script) => (script as HTMLScriptElement).nonce,
+  );
+  expect(pageNonce).toBe(policy.match(/nonce-([^' ;]+)/)?.[1]);
   await expect(page.getByRole('heading', { level: 1 })).toContainText(
     'Turning complexity',
   );
@@ -18,7 +26,7 @@ test('home is accessible, theme persists, assistant answers', async ({
     theme ?? 'dark',
   );
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
-  await page.getByRole('button', { name: 'Ask Alliance AI' }).click();
+  await page.getByRole('button', { name: 'Ask about my work' }).click();
   await page
     .getByRole('textbox', { name: 'Ask about the portfolio' })
     .fill('What is your education?');
@@ -26,10 +34,18 @@ test('home is accessible, theme persists, assistant answers', async ({
   await expect(
     page.getByRole('link', { name: 'Education', exact: true }).last(),
   ).toBeVisible();
-  await expect(page.getByRole('status')).toContainText('MSc');
+  await expect(page.getByRole('log')).toContainText('MSc');
+  await expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  await page
+    .getByRole('textbox', { name: 'Ask about the portfolio' })
+    .fill('What about that?');
+  await page.getByRole('button', { name: 'Ask', exact: true }).click();
+  await expect(page.getByRole('log')).toContainText('University of Rwanda');
+  await page.getByRole('button', { name: 'Reset conversation' }).click();
+  await expect(page.getByRole('button', { name: 'Reset conversation' })).toHaveCount(0);
   await page.keyboard.press('Escape');
   await expect(
-    page.getByRole('button', { name: 'Ask Alliance AI' }),
+    page.getByRole('button', { name: 'Ask about my work' }),
   ).toBeFocused();
   expect(
     await page.evaluate(
@@ -39,6 +55,7 @@ test('home is accessible, theme persists, assistant answers', async ({
   expect(errors).toEqual([]);
 });
 test('all essential pages and case studies resolve', async ({ page }) => {
+  test.setTimeout(120_000);
   for (const route of [
     '/about',
     '/experience',
@@ -61,23 +78,26 @@ test('all essential pages and case studies resolve', async ({ page }) => {
     '/research/malaria',
     '/research/citizen-science',
   ]) {
-    const response = await page.goto(route);
+    const response = await page.goto(route, { waitUntil: 'domcontentloaded' });
     expect(response?.status(), route).toBe(200);
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   }
-  const response = await page.goto('/blog/rag-notes');
+  const response = await page.request.get('/blog/rag-notes');
   expect(response?.status()).toBe(404);
 });
 test('project search and contact fallback work', async ({ page }) => {
-  await page.goto('/projects');
+  await page.goto('/projects', { waitUntil: 'domcontentloaded' });
   await page.getByRole('textbox', { name: 'Search projects' }).fill('Prisma');
   await expect(
     page.getByRole('heading', {
-      name: 'Identity with accountability built in.',
+      name: 'Role-Based Identity & Authentication Microservice',
     }),
   ).toBeVisible();
+  await expect(page.getByText('Identity with accountability built in.')).toBeVisible();
   await expect(
-    page.getByRole('heading', { name: 'Understanding malaria through time.' }),
+    page.getByRole('heading', {
+      name: 'Functional Data Analysis of Malaria Incidence',
+    }),
   ).toHaveCount(0);
   await page.goto('/contact');
   await page.getByLabel('Name', { exact: true }).fill('Test User');

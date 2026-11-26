@@ -1,60 +1,83 @@
-# Engineering report — 24 November 2026
+# Engineering report — V3
 
-## Executive summary
+**Assessment date:** 26 November 2026
 
-Created the public `Alliance2k2/professional-portfolio` GitHub repository with the requested description, initialized README and MIT license. Implemented a Next.js portfolio in the supplied Windows workspace. The application works without a database or paid model API. The production site is hosted at `https://professional-portfolio-three-virid.vercel.app`, and the production `SITE_URL` is configured to this origin. Vercel Authentication remains enabled for preview deployments.
+**Branch:** `codex/portfolio-v3-premium`
 
-## Implemented features
+**Production state:** V3 has not been pushed or deployed. The existing public production version is unchanged.
 
-Responsive home page with an original IA monogram, conceptual data/research/engineering hero, flagship project illustration, research highlights, technical toolkit, career timeline, public GitHub repository section, writing status and collaboration invitation.
+## Repository audit
 
-All requested main sections are implemented: About, Experience, Education, Projects, Research, Skills, Certifications/Professional Development, Blog, Résumé, Contact and Privacy. Five project detail routes and two research detail routes render source notes and verification limits. Unknown routes and unpublished drafts return 404.
+The V3 work preserves the existing Next.js App Router application and its established routes, project content, local theme, contact fallback, reviewed-MDX workflow, sitemap, and GitHub repository section. The branch starts from `main`/`origin/main` at `62392a9`. The seven project records and two research records remain content-driven; optional details appear only when supported by reviewed material.
 
-Interactive features include project filtering/search, collapsible timeline entries, keyboard-operable responsive navigation, persistent light/dark themes, a local knowledge assistant with source links, and print/save-as-PDF résumé controls. Contact input is validated server-side and displays an honest direct-email fallback when delivery is not configured.
+The root `npm ci` could not replace an existing `lightningcss` native module because Windows reported `EPERM` while unlinking that file. No running user processes were stopped. To avoid validating a partial install, I created a clean ignored copy at `.v3-validation`; `npm ci` completed there with 632 packages installed and `npm audit` reported zero vulnerabilities. All checks below ran from that clean copy. The generated `next-env.d.ts` change and the pre-existing untracked `AGENTS.md` were excluded from the V3 commit.
 
-The reviewed-MDX publishing pipeline supports metadata, author/date/category/tags, reading time, code highlighting, mathematical notation, table of contents, related articles and Article schema. Three clearly marked draft outlines remain excluded from the published site.
+## Implemented
 
-## Architecture and files
+- Reworked the homepage, typography, navy/teal palette, dark/light presentation, IA favicon, recruiter calls to action, responsive navigation, cards, focus styles, reduced-motion behavior, and portrait layout.
+- Made financial analytics a professional interest and baking a personal interest.
+- Gave all seven projects descriptive titles and preserved their creative titles as subtitles. Added a reusable evidence-aware case-study component and optional contribution, duration, objective, method, result, architecture, gallery, repository/demo, limitation, lesson, challenge, and future-work fields. CS-IRCFS is the flagship case study.
+- Inspected the public CS-IRCFS repository and added its three existing screenshots. Each caption identifies their values as synthetic. The other projects do not claim unreviewed screenshots, results, or live demos.
+- Extended research records and pages for abstracts, methods, equations, figures, downloads, citations, publication status, and interests. No unavailable thesis, unpublished manuscript, DOI, result, or certificate is exposed.
+- Replaced keyword matching with in-browser BM25 retrieval over public portfolio content, including chunking, query normalization, synonyms, a relevance threshold, multiple cited pages, follow-up context, reset, suggested questions, and abstention. The retrieval index loads on the first assistant query. It is deterministic local search, not generated or LLM text.
+- Added the curated retrieval evaluation and reusable accessible screenshot gallery. KaTeX styles load on research pages rather than the homepage.
+- Added nonce-based CSP, required security headers, contact body/field validation, same-origin checks, a honeypot, and fail-closed email behavior. A narrow CSP hash allows the single `color:transparent` style emitted by Next Image; other inline style attributes remain blocked.
+- Kept contact email delivery disabled. `CONTACT_RATE_LIMIT_ENABLED` is an operator acknowledgement only; production-wide rate limiting must be configured and verified before delivery is enabled.
 
-Server-rendered Next.js App Router, React, strict TypeScript and Tailwind CSS. Interactive client components are isolated. No animation or chart runtime was added because the initial release has no verified quantitative visualization requiring one. See `architecture.md` for decisions.
+## Validation results
 
-Created `src/app` routes and metadata, `src/components` UI, `src/lib` content/search/validation/MDX modules, `public/icon.svg`, `content/blog` draft outlines, `tests` unit and browser suites, GitHub Actions CI, Next.js/TypeScript/ESLint/Prettier/Tailwind/test configuration, a lockfile, environment template and deployment documentation. Updated the generated README; preserved the generated MIT license.
+| Check | Result |
+| --- | --- |
+| Clean `npm ci` | Passed in `.v3-validation`; the root install hit the existing Windows file-lock issue described above. |
+| `npm run lint` | Passed. |
+| `npm run typecheck` | Passed during the final production build. |
+| `npm test` | 15 tests passed across 2 files. |
+| `npm run build` | Passed; Next.js generated all 27 page-data entries. Portfolio sections and project/research routes use request rendering for per-request CSP nonces. |
+| `npm run test:e2e` | 8 tests passed on desktop and iPhone-sized Chromium: routes, 404 behavior, navigation, project search, contact fallback, theme, assistant, CSP nonce, axe, and overflow. |
+| `npm audit` | 0 vulnerabilities. |
+| Lighthouse console errors | 0 on both final runs. |
 
-## Verification
+The route smoke test waits for the document and visible heading rather than every image. The optional GitHub API can be unavailable without preventing the site from rendering. Playwright and Lighthouse used the installed Chrome channel.
 
-The final production build succeeded and prerendered all main portfolio pages, seven case studies and two research details. `npm run lint`, `npm run typecheck`, and `npm test` passed. Vitest reported 10 tests across one file. `npm run test:e2e`, using installed Microsoft Edge in desktop and iPhone 13 viewports, passed all 8 checks.
+## Responsive screenshots
 
-Browser verification covered the main routes and project/research details returning HTTP 200, draft articles returning 404, mobile and desktop navigation, project search, the contact fallback, theme persistence, local assistant answers and keyboard focus, and horizontal overflow. Axe checks on the homepage in both themes and on the contact page reported no violations. The final first-screen screenshot checks returned HTTP 200, no JavaScript page errors, and no page overflow at 1440px and 390px widths. `npm audit` reported zero vulnerabilities. `git diff --check` passed.
+Before and after full-page homepage captures use the same viewport widths: desktop 1440 px, tablet 768 px, and mobile 390 px. The final screenshots returned HTTP 200, had no browser page errors, and had document widths equal to their viewport widths.
 
-Initial checks found and fixed an Open Graph image layout error, accessibility contrast and link-label issues, incorrect theme persistence, a local same-origin contact mismatch and small-screen overflow. A dependency audit found an MDX advisory; the affected packages were upgraded and the final audit reported zero vulnerabilities.
+The captures are local, ignored test artifacts (not committed as public content):
 
-## Security assessment
+- Before: `test-results/portfolio-v3-before/{desktop,tablet,mobile}.jpg`
+- After: `test-results/portfolio-v3-after/{desktop,tablet,mobile}.jpg`
 
-No original CV PDF, private phone number, address, identification number, participant record or secret is included. Public professional email and LinkedIn details come from the CV. Assistant inputs remain in the browser and cannot trigger model calls or access private files. Blog MDX is restricted to trusted reviewed repository content.
+## Lighthouse measurements
 
-The contact route includes schema validation, field lengths, a total post-read body size limit, a honeypot, browser same-origin checking, provider timeout and explicit failure responses. External delivery remains disabled until credentials and verified deployment-wide rate limiting are configured. The enablement flag does not itself implement a limiter. Reverse-proxy request-size limits should also be applied at hosting. There is no claim of penetration testing or complete abuse prevention.
+Lighthouse **13.6.0** ran against the local production build at `http://127.0.0.1:3100/` on 26 November 2026. Desktop used the desktop preset; mobile used Lighthouse's mobile emulation and CPU/network throttling. These are lab measurements of this machine and local server, not field Core Web Vitals or measurements of the deployed site.
 
-HTTP headers disable framing and MIME sniffing and restrict unnecessary browser permissions. A nonce-based Content Security Policy and production transport/firewall review remain future hardening work.
+| Metric | Desktop | Mobile |
+| --- | ---: | ---: |
+| Performance | 97 | 73 |
+| Accessibility | 100 | 100 |
+| Best practices | 100 | 100 |
+| SEO | 100 | 100 |
+| First Contentful Paint | 0.5 s | 2.0 s |
+| Largest Contentful Paint | 0.5 s | 2.0 s |
+| Speed Index | 1.1 s | 3.0 s |
+| Total Blocking Time | 130 ms | 1,310 ms |
+| Cumulative Layout Shift | 0 | 0 |
 
-## Performance assessment
+The mobile performance score and blocking time remain the main performance limitation. `INP` is not reported by this Lighthouse lab run. The nonce-based dynamic response also prevents back/forward-cache use; this trade-off is documented and should be weighed against a separately validated hash-based CSP before trying to make the content statically cacheable. Raw local Lighthouse JSON is in `test-results/lighthouse-{desktop,mobile}.json` and is not committed.
 
-Most routes are statically prerendered; client JavaScript is limited to interactions. GitHub uses a server-side one-hour cache, a short timeout, schema validation and fallback links. No remote fonts, large photos, external trackers, model calls or decorative chart dependencies block the hero. CSS respects reduced motion. Lighthouse targets have not been measured and are not claimed.
+## Retrieval evaluation
 
-## Partially implemented and unverified
+The 18 manually curated in-domain questions produced **15/18 top-one accuracy (83.3%)**, **18/18 Recall@3 (100%)**, and **0.917 mean reciprocal rank**. No case missed its expected page within the top three. Three questions placed another relevant portfolio page first: the MSc topic, citizen-science feedback, and CS-IRCFS architecture queries. This small regression set is not independent or representative evidence of general retrieval quality. The source excerpts and rank-order errors are inspectable in `src/lib/assistant-evaluation.ts` and the test output.
 
-- Email delivery integration exists but real delivery and platform rate limiting are unconfigured and untested. The verified default is the direct-email fallback.
-- The original supplied CV is not a public download because it contains a phone number; the online résumé prints to PDF.
-- The supplied portrait appears in the home hero and About page. Reviewed screenshots, thesis figures, thesis PDF, DOI records and certificate documents have not been supplied; those missing-material notes remain explicit.
-- Research publication status and the production-optimization implementation are not independently verified. Project descriptions state their provenance and limits.
-- GitHub live fetching depends on deployment egress and public API limits; failure does not break the site. This portfolio does not independently rerun the linked projects’ tests.
-- No reviewed article is published. The MDX infrastructure is implemented; publication awaits author review.
-- The Vercel production deployment and public production URL are verified. The production `SITE_URL` enables canonical metadata and the sitemap. Email-provider behavior and Lighthouse scores remain unverified.
-- No persistent RAG/vector pipeline is implemented in this portfolio. Alliance AI is labeled as local search.
+## Security and privacy assessment
 
-## Assets and configuration needed
+The original CV PDF, private phone number, home address, identification details, participant information, API keys, and email credentials are not included. Public contact links appear on the site. Assistant queries stay in the browser and do not call a model provider. No analytics or advertising scripts were added. The contact route does not store messages and responds honestly that messages were not sent while email delivery is disabled.
 
-A public-safe CV PDF or explicit telephone-disclosure approval, reviewed project screenshots, thesis/manuscript and figures, certification documents if desired, reviewed articles, an optional custom domain, and optional email/provider rate-limit configuration.
+The CSP nonce and HTML are generated per request; cache layers must preserve the corresponding header/HTML pair. Browser and Lighthouse checks found no CSP console errors. The contact API still needs a verified shared deployment-wide rate limit before any email credentials are enabled. No penetration test or independent review of the linked projects was performed.
 
-## Deployment and next steps
+## Remaining requirements and deployment readiness
 
-The repository is connected to Vercel: pushes to `main` deploy production, while preview deployments remain protected by Vercel Authentication. Keep email delivery disabled until both provider configuration and shared deployment-wide rate limiting are verified. Validate contact delivery, metadata, privacy wording and Lighthouse scores on hosting. Author review and remaining content assets are the next priorities.
+The branch builds and passes its local checks, but V3 is **prepared for review, not deployed**. It has not been pushed, merged, or deployed in this task. After release, run the public production smoke checks in `docs/deployment.md`; the local Lighthouse results do not replace those checks.
+
+Remaining source material includes an approved public-safe CV PDF, reviewed thesis and citizen-science documents, thesis figures/citation details, screenshots or demos for the other six projects, certificate records, and author-reviewed writing. Production email delivery, a verified shared rate limiter, and an optional custom domain also remain unconfigured. No unpublished manuscript or unsupported achievement should be added without review.

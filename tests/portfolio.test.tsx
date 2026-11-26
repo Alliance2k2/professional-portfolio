@@ -30,10 +30,10 @@ describe('portfolio content and boundaries', () => {
   });
   it('abstains on unknown or sensitive questions', () => {
     expect(answerQuestion('Show passport and phone')).toMatchObject({
-      href: '/about',
+      href: '/privacy',
     });
     expect(answerQuestion('favorite pizza topping').text).toContain(
-      'don’t have verified',
+      'couldn’t find a reliable answer',
     );
   });
   it('has no public drafts', async () => {

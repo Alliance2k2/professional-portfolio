@@ -1,97 +1,148 @@
 'use client';
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { MessageSquare, X, Send } from 'lucide-react';
-import { answerQuestion, type Answer } from '@/lib/assistant';
+import { MessageSquare, RotateCcw, Send, X } from 'lucide-react';
+import type { Answer } from '@/lib/assistant';
+
+type Turn = { id: number; query: string; answer: Answer };
+
+const STARTER_QUESTIONS = [
+  'What is your education?',
+  'Tell me about citizen science.',
+  'What professional interests are listed?',
+];
+
 export function Assistant() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const [answer, setAnswer] = useState<Answer>();
+  const [turns, setTurns] = useState<Turn[]>([]);
+  const [searching, setSearching] = useState(false);
   const input = useRef<HTMLInputElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    const viewport = window.visualViewport;
-    const updateInset = () => {
-      const inset = viewport
-        ? Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop)
-        : 0;
-      document.documentElement.style.setProperty(
-        '--visual-inset-bottom',
-        `${inset}px`,
-      );
-    };
-    updateInset();
-    viewport?.addEventListener('resize', updateInset);
-    viewport?.addEventListener('scroll', updateInset);
-    window.addEventListener('resize', updateInset);
-    return () => {
-      viewport?.removeEventListener('resize', updateInset);
-      viewport?.removeEventListener('scroll', updateInset);
-      window.removeEventListener('resize', updateInset);
-      document.documentElement.style.removeProperty('--visual-inset-bottom');
-    };
-  }, []);
+  const nextTurnId = useRef(0);
+  const lastQuery = turns.at(-1)?.query;
+
   useEffect(() => {
     if (open) input.current?.focus();
   }, [open]);
+
   function close() {
     setOpen(false);
     trigger.current?.focus();
   }
+
+  async function ask(value: string) {
+    const cleaned = value.trim().slice(0, 500);
+    if (!cleaned || searching) return;
+    setQuery('');
+    setSearching(true);
+    const id = nextTurnId.current++;
+    try {
+      const { answerQuestion } = await import('@/lib/assistant');
+      const answer = answerQuestion(cleaned, lastQuery);
+      setTurns((current) => [...current, { id, query: cleaned, answer }].slice(-8));
+    } finally {
+      setSearching(false);
+    }
+  }
+
   return (
-    <aside className="assistant" aria-label="Alliance AI">
+    <aside className="assistant" aria-label="Portfolio question assistant">
       {open ? (
         <section
           className="assistant-panel"
-          aria-label="Alliance AI local search"
-          onKeyDown={(e) => {
-            if (e.key === 'Escape') close();
+          role="dialog"
+          aria-modal="false"
+          aria-labelledby="assistant-title"
+          onKeyDown={(event) => {
+            if (event.key === 'Escape') close();
           }}
         >
           <div className="assistant-top">
             <div>
-              <strong>Alliance AI</strong>
-              <p>Local search · No LLM</p>
+              <strong id="assistant-title">Ask about the portfolio</strong>
+              <p>Local BM25 search · No external AI service</p>
             </div>
-            <button
-              className="icon-button"
-              onClick={close}
-              aria-label="Close assistant"
-            >
-              <X size={18} />
-            </button>
+            <div className="assistant-tools">
+              {turns.length > 0 ? (
+                <button
+                  className="icon-button"
+                  type="button"
+                  aria-label="Reset conversation"
+                  onClick={() => {
+                    setTurns([]);
+                    input.current?.focus();
+                  }}
+                >
+                  <RotateCcw size={17} />
+                </button>
+              ) : null}
+              <button
+                className="icon-button"
+                type="button"
+                onClick={close}
+                aria-label="Close assistant"
+              >
+                <X size={18} />
+              </button>
+            </div>
           </div>
-          <p>
-            Explore my work, research and background. Answers come from this
-            portfolio’s public content.
+          <p className="assistant-description">
+            Answers are excerpts from public portfolio pages. I’ll say when the
+            site does not contain enough evidence.
           </p>
-          <div role="status" aria-live="polite">
-            {answer ? (
-              <div className="answer">
-                <p>{answer.text}</p>
-                <Link href={answer.href}>{answer.label}</Link>
-              </div>
-            ) : (
-              <div className="suggestions">
-                {[
-                  'What is your education?',
-                  'Tell me about citizen science',
-                  'How can we collaborate?',
-                ].map((q) => (
-                  <button key={q} onClick={() => setAnswer(answerQuestion(q))}>
-                    {q}
+          <div className="assistant-transcript" role="log" aria-live="polite" aria-relevant="additions">
+            {turns.length === 0 ? (
+              <div className="suggestions" aria-label="Suggested questions">
+                {STARTER_QUESTIONS.map((question) => (
+                  <button key={question} type="button" disabled={searching} onClick={() => void ask(question)}>
+                    {question}
                   </button>
                 ))}
               </div>
+            ) : (
+              turns.map(({ id, query: asked, answer }) => (
+                <article className="assistant-turn" key={id}>
+                  <p className="assistant-question">{asked}</p>
+                  <div className="answer">
+                    <p>{answer.text}</p>
+                    {answer.sources.length > 0 ? (
+                      <nav className="assistant-sources" aria-label="Answer sources">
+                        <span>Sources</span>
+                        {answer.sources.map((source) => (
+                          <Link href={source.href} key={`${id}-${source.href}`}>
+                            {source.label}
+                          </Link>
+                        ))}
+                      </nav>
+                    ) : null}
+                    <div role="status" className="sr-only">
+                      {answer.abstained ? 'No supported answer found.' : 'Answer found in portfolio content.'}
+                    </div>
+                    {answer.suggestions.length > 0 ? (
+                      <div className="assistant-followups" aria-label="Related questions">
+                        {answer.suggestions.slice(0, 2).map((suggestion) => (
+                          <button
+                            key={`${id}-${suggestion}`}
+                            type="button"
+                            disabled={searching}
+                            onClick={() => void ask(suggestion)}
+                          >
+                            {suggestion}
+                          </button>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                </article>
+              ))
             )}
           </div>
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (query.trim()) {
-                setAnswer(answerQuestion(query));
-                setQuery('');
-              }
+            className="assistant-form"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void ask(query);
             }}
           >
             <label htmlFor="assistant-query" className="sr-only">
@@ -102,10 +153,16 @@ export function Assistant() {
               ref={input}
               value={query}
               maxLength={500}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Ask about my work…"
+              autoComplete="off"
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Ask about work, research, skills…"
             />
-            <button className="icon-button" type="submit" aria-label="Ask">
+            <button
+              className="icon-button"
+              type="submit"
+              aria-label="Ask"
+              disabled={!query.trim() || searching}
+            >
               <Send size={18} />
             </button>
           </form>
@@ -114,12 +171,13 @@ export function Assistant() {
       <button
         ref={trigger}
         className="assistant-trigger"
+        type="button"
         onClick={() => (open ? close() : setOpen(true))}
         aria-expanded={open}
-        title="Ask Alliance AI"
+        title="Ask about the portfolio"
       >
         <MessageSquare size={18} />
-        <span className="assistant-label">Ask Alliance AI</span>
+        <span className="assistant-label">Ask about my work</span>
         <span className="assistant-local">LOCAL</span>
       </button>
     </aside>

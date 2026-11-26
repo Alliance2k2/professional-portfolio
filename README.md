@@ -2,7 +2,7 @@
 
 Professional portfolio showcasing my expertise in Data Science, AI, Research and Software Engineering.
 
-A responsive Next.js App Router application with strict TypeScript, Tailwind CSS, structured content, project case studies, research pages, an MDX publishing workflow and a free deterministic portfolio assistant.
+A responsive Next.js App Router application with strict TypeScript, Tailwind CSS, structured content, seven evidence-aware project case studies, research records, an MDX publishing workflow and a free local BM25 portfolio assistant.
 
 ## Run locally
 
@@ -24,6 +24,7 @@ npm test
 npm run build
 npx playwright install chromium
 npm run test:e2e
+npm audit
 ```
 
 For an existing Windows Edge installation, set `PLAYWRIGHT_CHANNEL=msedge` instead of downloading Chromium. Browser tests start an isolated production server on port 3100 after a production build. They do not send email. CI runs the same checks on Linux.
@@ -34,11 +35,14 @@ For an existing Windows Edge installation, set `PLAYWRIGHT_CHANNEL=msedge` inste
 - `src/components`: shared navigation, timeline, footer, project search, assistant and contact form. Client components are limited to interactive areas.
 - `src/lib/content.ts`: centralized public profile, CV-derived career/education, skills, project and research content.
 - `src/lib/blog.ts`: validates metadata and loads reviewed, non-draft MDX from the repository.
-- `src/lib/assistant.ts`: deterministic public-content retrieval with source-page links. No LLM or network access.
+- `src/lib/assistant.ts`: chunked local BM25 retrieval over public profile, project, research, skill and career content. It returns source links, handles contextual follow-ups, resets locally and abstains on unsupported questions. No LLM or query network access.
+- `src/lib/assistant-evaluation.ts`: curated retrieval questions and ranking metrics used by the automated regression test.
+- `src/components/project-case-study.tsx`: reusable evidence-aware case-study presentation for all seven projects.
+- `docs/asset-manifest.md`: source and provenance for the portrait, IA icon, generated social card and reviewed project screenshots.
 - `content/blog`: unpublished draft templates. Public GitHub source includes these outlines; they are not published as authored articles on the website.
 - `tests`: content, validation, component and API tests plus desktop/mobile Playwright and axe checks.
 
-The site uses CSS transitions with reduced-motion support rather than adding an animation runtime. No charts are displayed without verified data. The home hero pairs the supplied portrait with an original CSS composition; the flagship illustration is conceptual, not research evidence. No image-generation or paid service is needed.
+The site uses restrained CSS transitions with reduced-motion support rather than adding an animation runtime. The home hero pairs the supplied portrait with an original CSS composition; the flagship overview is conceptual, not research evidence. Three CS-IRCFS screenshots come from the linked public repository and are labelled synthetic demonstration data. No image-generation or paid service is needed.
 
 ## Updating content
 
@@ -62,12 +66,16 @@ The production site is hosted at [professional-portfolio-three-virid.vercel.app]
 
 The production `SITE_URL` is set to the HTTPS site origin for canonical metadata and the sitemap. For local builds, use `npm ci` and `npm run build`.
 
-Keep contact delivery disabled until the provider and deployment-wide limiter are configured and verified. Leave `NEXT_PUBLIC_ASSISTANT_ENABLED=true`, or set it to `false` at build time to remove the assistant UI. Review contact behavior, metadata and privacy wording on the hosted site. Lighthouse scores have not been measured and are not claimed.
+Rendered pages use a nonce-based Content Security Policy. The nonce requires request-time rendering; see [Architecture](docs/architecture.md) for caching and performance implications and [Deployment](docs/deployment.md) for production checks.
+
+Keep contact delivery disabled until the provider and deployment-wide limiter are configured and verified. Leave `NEXT_PUBLIC_ASSISTANT_ENABLED=true`, or set it to `false` at build time to remove the assistant UI. V3 has not been pushed or deployed; the current public production site remains unchanged. The local production build scored 97 desktop and 73 mobile in Lighthouse 13.6.0, with 100 accessibility, best-practices and SEO scores in both modes. See [Engineering report](docs/engineering-report.md) for the measurement context and mobile performance limitation. Re-run Lighthouse and the smoke checks against the deployed V3 site after release.
 
 GitHub repository creation is separate from application deployment. The repository is public and MIT-licensed. Avoid committing private CVs, `.env` files, tokens or participant data.
 
 ## Content provenance and limits
 
-Public content is drawn from the supplied CV and development brief. CS-IRCFS and Arrowstack Identity READMEs were inspected through the connected GitHub service on 24 November 2026. Their implementation descriptions are attributed to those sources; their tests were not independently rerun here. No live demo, paper acceptance, employment outcome, research impact or certification document is invented.
+Public content is drawn from the supplied CV and user-provided development brief. CS-IRCFS and Arrowstack Identity READMEs were inspected through the connected GitHub service. The CS-IRCFS gallery images come from its public repository and are marked synthetic. Project test suites were not independently rerun here. No live demo, paper acceptance, employment outcome, research impact or certification document is invented.
 
-Remaining content assets: a public-safe CV PDF, reviewed thesis/manuscript and research figures, reviewed project screenshots and author-approved articles. Production email delivery and deployment-wide rate limiting remain unconfigured; a custom domain is optional. See `docs/engineering-report.md` for verification limits.
+Remaining content assets: a public-safe CV PDF, reviewed thesis/manuscript and research figures, screenshots for six projects, certificate records and author-approved articles. Production email delivery and deployment-wide rate limiting remain unconfigured; a custom domain is optional.
+
+See [Architecture](docs/architecture.md), [Deployment](docs/deployment.md), [Roadmap](docs/roadmap.md), [Asset manifest](docs/asset-manifest.md) and the [Engineering report](docs/engineering-report.md) for implementation evidence and outstanding validation.
