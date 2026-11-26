@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Menu, X, Sun, Moon } from 'lucide-react';
 const links = [
   ['/about', 'About'],
@@ -26,11 +26,23 @@ function getServerThemeSnapshot() {
 export function Navigation() {
   const path = usePathname();
   const [open, setOpen] = useState(false);
+  const menuTrigger = useRef<HTMLButtonElement>(null);
   const dark = useSyncExternalStore(
     subscribeTheme,
     getThemeSnapshot,
     getServerThemeSnapshot,
   );
+  useEffect(() => {
+    if (!open) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpen(false);
+        menuTrigger.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [open]);
   function toggleTheme() {
     const next =
       document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
@@ -53,6 +65,7 @@ export function Navigation() {
           </span>
         </Link>
         <nav
+          id="main-nav"
           className={open ? 'nav-links open' : 'nav-links'}
           aria-label="Main navigation"
         >
@@ -82,9 +95,11 @@ export function Navigation() {
           {dark ? <Sun size={19} /> : <Moon size={19} />}
         </button>
         <button
+          ref={menuTrigger}
           className="icon-button menu-button"
           aria-label={open ? 'Close menu' : 'Open menu'}
           aria-expanded={open}
+          aria-controls="main-nav"
           onClick={() => setOpen(!open)}
         >
           {open ? <X /> : <Menu />}

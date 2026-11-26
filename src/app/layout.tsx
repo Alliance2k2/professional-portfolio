@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/shared';
 import { Assistant } from '@/components/assistant';
 import { profile } from '@/lib/content';
 import './globals.css';
-import 'katex/dist/katex.min.css';
 const origin = process.env.SITE_URL;
 export const metadata: Metadata = {
   metadataBase: new URL(origin || 'http://127.0.0.1:3000'),
@@ -23,11 +23,12 @@ export const metadata: Metadata = {
   },
   twitter: { card: 'summary_large_image' },
 };
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
   const person = {
     '@context': 'https://schema.org',
     '@type': 'Person',
@@ -44,12 +45,14 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <script
+          nonce={nonce}
           dangerouslySetInnerHTML={{
             __html:
               "try{document.documentElement.dataset.theme=localStorage.getItem('ia-theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark')}catch{}",
           }}
         />
         <script
+          nonce={nonce}
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(person).replace(/</g, '\\u003c'),

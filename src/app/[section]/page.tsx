@@ -14,7 +14,8 @@ import {
   research,
   skills,
   development,
-  interests,
+  professionalInterests,
+  personalInterests,
   routes,
 } from '@/lib/content';
 import { getArticles } from '@/lib/blog';
@@ -127,10 +128,16 @@ export default async function SectionPage({
               Association (2025–2026).
             </p>
             <p>English — Excellent · Kinyarwanda — Native · French — Fair.</p>
-            <h2>Areas of interest</h2>
+            <h2>Research and professional interests</h2>
             <div className="tags">
-              {interests.map((i) => (
+              {professionalInterests.map((i) => (
                 <span key={i}>{i}</span>
+              ))}
+            </div>
+            <h2 className="personal-interest-title">Beyond work</h2>
+            <div className="tags" aria-label="Personal interests">
+              {personalInterests.map((interest) => (
+                <span key={interest}>{interest}</span>
               ))}
             </div>
           </div>
@@ -139,7 +146,8 @@ export default async function SectionPage({
               <Image
                 src="/alliance-irigenera.jpg"
                 alt="Studio portrait of Irigenera Alliance wearing a camel-colored blazer."
-                fill
+                width={900}
+                height={900}
                 sizes="(max-width: 760px) calc(100vw - 40px), 33vw"
                 className="about-portrait"
               />
@@ -205,7 +213,7 @@ export default async function SectionPage({
           <div className="prose">
             <h2>Research interests</h2>
             <div className="tags">
-              {interests.map((i) => (
+              {professionalInterests.map((i) => (
                 <span key={i}>{i}</span>
               ))}
             </div>
@@ -346,7 +354,7 @@ export default async function SectionPage({
               <a href={profile.github}>GitHub · Alliance2k2</a>
               <a href={profile.linkedin}>LinkedIn · Irigenera Alliance</a>
             </div>
-            <p className="small" style={{ marginTop: 25 }}>
+            <p className="small contact-privacy-note">
               Your message is used only to respond to your inquiry.{' '}
               <Link href="/privacy">Read the privacy notice.</Link>
             </p>

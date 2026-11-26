@@ -21,7 +21,7 @@ export default function Home() {
       <section className="hero container">
         <div className="hero-copy">
           <div className="availability">
-            <span /> DATA SCIENCE · APPLIED AI · SOFTWARE
+            <span /> DATA SCIENCE · MATHEMATICAL STATISTICS · APPLIED AI
           </div>
           <h1>
             Turning complexity
@@ -34,9 +34,10 @@ export default function Home() {
           </h1>
           <p className="hero-name">I’m Irigenera Alliance.</p>
           <p className="hero-description">
-            A data science professional, researcher and developer building
-            intelligent systems at the intersection of{' '}
-            <strong>data, people and real-world problems.</strong>
+            Data science professional and research fellow with an MSc in
+            Mathematical Sciences specializing in Data Science. I connect
+            statistical analysis, applied AI and software development to{' '}
+            <strong>research questions and practical decisions.</strong>
           </p>
           <div className="hero-actions">
             <Link href="/projects" className="button primary">
@@ -72,8 +73,9 @@ export default function Home() {
             <div className="core">
               <Image
                 src="/alliance-irigenera.jpg"
-                alt=""
-                fill
+                alt="Portrait of Irigenera Alliance"
+                width={440}
+                height={440}
                 sizes="(max-width: 760px) 126px, 148px"
                 className="hero-portrait"
                 preload
@@ -104,8 +106,7 @@ export default function Home() {
             </span>
           </div>
           <span className="sr-only">
-            Portrait of Irigenera Alliance at the center, surrounded by labels
-            for data science, research and engineering.
+            Orbit graphic labels data science, research and engineering.
           </span>
         </div>
       </section>
@@ -183,6 +184,7 @@ export default function Home() {
           <div className="flagship-copy">
             <span className="eyebrow">FLAGSHIP PROJECT · DATA SYSTEMS</span>
             <h3>{projects[0].title}</h3>
+            <p className="project-subtitle">{projects[0].subtitle}</p>
             <p>
               {projects[0].summary} Connecting community reports, geospatial
               insight and accountable workflows.
@@ -207,6 +209,7 @@ export default function Home() {
               </div>
               <span className="eyebrow">{p.category}</span>
               <h3>{p.title}</h3>
+              <p className="project-subtitle">{p.subtitle}</p>
               <p>{p.summary}</p>
               <div className="tags">
                 {p.tags.slice(0, 3).map((t) => (

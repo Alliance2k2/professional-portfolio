@@ -9,14 +9,14 @@ export function ProjectBrowser({ projects }: { projects: Project[] }) {
   const filtered = projects.filter(
     (p) =>
       (filter === 'All work' || p.category === filter) &&
-      `${p.title} ${p.summary} ${p.tags.join(' ')}`
+      `${p.title} ${p.subtitle} ${p.summary} ${(p.technologies ?? p.tags).join(' ')}`
         .toLowerCase()
         .includes(query.toLowerCase()),
   );
   return (
     <>
       <div className="project-controls">
-        <div className="filters" aria-label="Filter projects">
+        <div className="filters" role="group" aria-label="Filter projects">
           {categories.map((c) => (
             <button
               key={c}
@@ -46,9 +46,10 @@ export function ProjectBrowser({ projects }: { projects: Project[] }) {
           >
             <span className="eyebrow">{p.category}</span>
             <h2>{p.title}</h2>
+            <p className="project-subtitle">{p.subtitle}</p>
             <p>{p.summary}</p>
             <div className="tags">
-              {p.tags.map((t) => (
+              {(p.technologies ?? p.tags).map((t) => (
                 <span key={t}>{t}</span>
               ))}
             </div>

@@ -50,10 +50,22 @@ export const education = [
 export type Project = {
   slug: string;
   title: string;
+  subtitle: string;
   category: string;
   status: string;
   summary: string;
   tags: string[];
+  technologies?: string[];
+  duration?: string;
+  contribution?: string;
+  objectives?: string[];
+  architecture?: { stage: string; detail: string }[];
+  architectureSource?: string;
+  gallery?: { src: string; alt: string; caption: string; synthetic?: boolean }[];
+  liveDemo?: { href: string; label: string };
+  technicalChallenges?: string[];
+  lessonsLearned?: string[];
+  futureImprovements?: string[];
   problem: string;
   method: string;
   implementation: string;
@@ -65,12 +77,52 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: 'cs-ircfs',
-    title: 'Community evidence. Better decisions.',
+    title: 'Community Science & Irrigation Monitoring Platform',
+    subtitle: 'Community evidence. Better decisions.',
     category: 'Data systems',
     status: 'Working prototype',
     summary:
       'CS-IRCFS: a citizen science and agricultural monitoring platform for Bugesera, Rwanda.',
     tags: ['Python', 'FastAPI', 'PostgreSQL', 'PostGIS', 'React'],
+    technologies: ['Python', 'FastAPI', 'PostgreSQL', 'PostGIS', 'React'],
+    objectives: [
+      'Collect community agricultural reports, including from phones without internet.',
+      'Turn validated reports into traceable district-level review and decision workflows.',
+    ],
+    contribution:
+      'The CV records Alliance’s citizen-science research work; the repository documents the platform. A task-by-task contribution breakdown is not available in the reviewed materials.',
+    architecture: [
+      { stage: 'Community reports', detail: 'USSD and SMS field submissions' },
+      { stage: 'Message gateway', detail: 'Africa’s Talking delivery' },
+      { stage: 'Application API', detail: 'FastAPI validation and workflows' },
+      { stage: 'Spatial data', detail: 'PostgreSQL and PostGIS' },
+      { stage: 'Review', detail: 'District dashboards and case workflows' },
+    ],
+    architectureSource: 'Architecture summarized from the inspected public repository README.',
+    gallery: [
+      {
+        src: '/projects/cs-ircfs-dashboard.jpg',
+        alt: 'CS-IRCFS Bugesera District decision-support dashboard showing example reports and irrigation metrics.',
+        caption: 'District decision-support dashboard from the public CS-IRCFS repository.',
+        synthetic: true,
+      },
+      {
+        src: '/projects/cs-ircfs-trends.jpg',
+        alt: 'CS-IRCFS trends screen with example report, rainfall, case and harvest charts.',
+        caption: 'Trends view from the public CS-IRCFS repository.',
+        synthetic: true,
+      },
+      {
+        src: '/projects/cs-ircfs-monthly-report.jpg',
+        alt: 'CS-IRCFS monthly report with example agriculture and irrigation summaries.',
+        caption: 'Monthly report view from the public CS-IRCFS repository.',
+        synthetic: true,
+      },
+    ],
+    technicalChallenges: [
+      'The repository documents duplicate-delivery handling for USSD and SMS messages, where retries can otherwise create repeated reports.',
+      'The local demonstration path and production PostgreSQL/PostGIS path have different storage requirements.',
+    ],
     problem:
       'Bring community field reports into traceable agricultural and irrigation decisions, including reporting from phones without internet.',
     method:
@@ -86,12 +138,20 @@ export const projects: Project[] = [
   },
   {
     slug: 'cs-evidence-assistant',
-    title: 'Answers grounded in sources.',
+    title: 'Evidence-Grounded Assistant for Field Teams',
+    subtitle: 'Answers grounded in sources.',
     category: 'Applied AI',
     status: 'CS-IRCFS prototype',
     summary:
       'CS Assistant: role-aware retrieval-augmented answers with citations and an auditable document workflow.',
     tags: ['Python', 'FastAPI', 'React', 'BM25', 'RAG'],
+    technologies: ['Python', 'FastAPI', 'React', 'BM25', 'RAG'],
+    contribution:
+      'The supplied CV records this assistant prototype within CS-IRCFS. The linked repository documents its retrieval, citations and access-control approach; detailed individual ownership has not been independently reviewed.',
+    objectives: [
+      'Help authorized staff find guidance in approved documents.',
+      'Return source-linked answers and abstain when supported material is unavailable.',
+    ],
     problem:
       'Help authorized staff find practical information in approved documents, with visible citations and access checks.',
     method:
@@ -108,12 +168,24 @@ export const projects: Project[] = [
   },
   {
     slug: 'financial-stability-africa',
-    title: 'Signals of financial instability.',
+    title: 'Financial Stability Analysis Across African Economies',
+    subtitle: 'Signals of financial instability.',
     category: 'Data science',
     status: 'Completed analytics project',
     summary:
       'An interactive analysis of banking, currency, inflation and systemic crises across African economies.',
     tags: ['Python', 'scikit-learn', 'Streamlit', 'Machine learning'],
+    technologies: ['Python', 'scikit-learn', 'Streamlit', 'Machine learning'],
+    duration: 'July–August 2026',
+    objectives: [
+      'Explore how macroeconomic indicators relate to observed financial crises across countries and years.',
+      'Compare classification approaches using the evaluation described in the CV.',
+    ],
+    contribution:
+      'The CV describes the country-year analysis, comparison of three model families and an interactive Streamlit dashboard. The underlying artifacts are not available for independent review.',
+    futureImprovements: [
+      'Review the original notebook, data provenance and validation design before interpreting the reported ROC-AUC.',
+    ],
     problem:
       'Explore how economic conditions relate to financial crises across countries and time.',
     method:
@@ -129,12 +201,22 @@ export const projects: Project[] = [
   },
   {
     slug: 'malaria-functional-analysis',
-    title: 'Understanding malaria through time.',
+    title: 'Functional Data Analysis of Malaria Incidence',
+    subtitle: 'Understanding malaria through time.',
     category: 'Research',
     status: 'Master’s research',
     summary:
       'Functional Data Analysis of malaria incidence, exploring temporal dynamics, seasonality and regional variation.',
     tags: ['R', 'Functional Data Analysis', 'Statistics'],
+    technologies: ['R', 'Functional Data Analysis', 'Statistics'],
+    contribution:
+      'The CV identifies this as Alliance’s MSc research topic. The thesis manuscript is needed to verify the final analysis and findings.',
+    objectives: [
+      'Examine temporal patterns, seasonality and regional variation in malaria incidence.',
+    ],
+    futureImprovements: [
+      'Add an approved thesis abstract, verified methods, figures and public-safe download after manuscript review.',
+    ],
     problem:
       'Study patterns in malaria incidence over time and across regions rather than considering each observation in isolation.',
     method:
@@ -150,12 +232,25 @@ export const projects: Project[] = [
   },
   {
     slug: 'arrowstack-identity',
-    title: 'Identity with accountability built in.',
+    title: 'Role-Based Identity & Authentication Microservice',
+    subtitle: 'Identity with accountability built in.',
     category: 'Software engineering',
     status: 'Portfolio implementation',
     summary:
       'A role-based authentication microservice with a React demonstration interface.',
     tags: ['TypeScript', 'Express', 'Prisma', 'PostgreSQL', 'React'],
+    technologies: ['TypeScript', 'Express', 'Prisma', 'PostgreSQL', 'React'],
+    architecture: [
+      { stage: 'Web client', detail: 'React demonstration interface' },
+      { stage: 'API', detail: 'TypeScript and Express' },
+      { stage: 'Data access', detail: 'Prisma ORM' },
+      { stage: 'Database', detail: 'PostgreSQL account and session records' },
+    ],
+    architectureSource: 'High-level architecture summarized from the inspected public repository README.',
+    objectives: [
+      'Support validated account registration and role-based access.',
+      'Make refresh-token rotation, replay detection and revocation traceable.',
+    ],
     problem:
       'Provide validated account registration and controlled access with traceable session behavior.',
     method:
@@ -171,12 +266,20 @@ export const projects: Project[] = [
   },
   {
     slug: 'last-mile-logistics',
-    title: 'From delivery data to operational insight.',
+    title: 'Last-Mile Delivery Performance Analytics',
+    subtitle: 'From delivery data to operational insight.',
     category: 'Analytics',
     status: 'Completed project',
     summary:
       'Last-mile logistics delivery performance and customer satisfaction analysis using the Brazilian Olist dataset.',
     tags: ['Python', 'SQL', 'Streamlit'],
+    technologies: ['Python', 'SQL', 'Streamlit'],
+    duration: 'May–June 2026',
+    contribution:
+      'The CV records an analysis and Streamlit KPI dashboard using the Brazilian Olist dataset. Detailed findings and artifacts were not supplied.',
+    objectives: [
+      'Explore delivery performance and its relationship to customer satisfaction.',
+    ],
     problem:
       'Understand delivery performance and the relationship between delivery timing and customer satisfaction.',
     method:
@@ -191,11 +294,16 @@ export const projects: Project[] = [
   },
   {
     slug: 'production-optimization',
-    title: 'A mathematical lens on production.',
+    title: 'Production Optimization with Economic Functions',
+    subtitle: 'A mathematical lens on production.',
     category: 'Research',
     status: 'Project described in brief',
     summary: 'Production optimization with CES and Cobb–Douglas functions.',
     tags: ['Optimization', 'Econometrics', 'Statistics'],
+    technologies: ['Optimization', 'Econometrics', 'Statistics'],
+    objectives: [
+      'Study how constrained inputs affect production under CES and Cobb–Douglas functions.',
+    ],
     problem: 'Explore how constrained resources shape production output.',
     method:
       'The project brief identifies Lagrange multipliers, KKT conditions and statistical estimation.',
@@ -282,7 +390,24 @@ export const development = [
     'August 2026',
   ],
 ];
-export const research = [
+export type ResearchItem = {
+  slug: string;
+  title: string;
+  status: string;
+  description: string;
+  body: string;
+  project: string;
+  abstract?: string;
+  methodology?: string[];
+  equations?: { label: string; tex: string }[];
+  figures?: { src: string; alt: string; caption: string; synthetic?: boolean }[];
+  download?: { href: string; label: string };
+  citation?: { apa?: string; bibtex?: string };
+  publicationStatus?: string;
+  materialsNote?: string;
+  researchInterests?: string[];
+};
+export const research: ResearchItem[] = [
   {
     slug: 'malaria',
     title: 'Functional Data Analysis of Malaria Incidence',
@@ -291,6 +416,10 @@ export const research = [
       'Temporal dynamics, seasonality and regional variation in malaria incidence.',
     body: 'Research recorded in the AIMS Rwanda MSc entry in the supplied CV. The thesis manuscript and publication details have not been supplied. No DOI, citation, or publication status is inferred.',
     project: '/projects/malaria-functional-analysis',
+    publicationStatus: 'Not specified in the supplied materials.',
+    materialsNote:
+      'The thesis manuscript, verified abstract, figures and public-safe PDF are awaiting review. No thesis results or publication status are asserted.',
+    researchInterests: ['Functional data analysis', 'Malaria incidence', 'Temporal statistics'],
   },
   {
     slug: 'citizen-science',
@@ -300,9 +429,13 @@ export const research = [
       'Community evidence, agricultural monitoring and accountable information systems.',
     body: 'As a Citizen Science Research Fellow at AIMS Rwanda, Alliance coordinates community-based agricultural research and feedback. The CV also documents a CS Assistant prototype using BM25 retrieval, citations and permissions before retrieval. Optional provider adapters are implemented in that separate project; this portfolio assistant uses deterministic local search.',
     project: '/projects/cs-ircfs',
+    publicationStatus: 'Ongoing research; no publication status supplied.',
+    materialsNote:
+      'No reviewed abstract, research report or downloadable manuscript has been supplied for this portfolio.',
+    researchInterests: ['Citizen science', 'Agricultural resilience', 'Evidence-grounded systems'],
   },
 ];
-export const interests = [
+export const professionalInterests = [
   'Agricultural data science',
   'Public health analytics',
   'Citizen science',
@@ -310,8 +443,9 @@ export const interests = [
   'Geospatial analytics',
   'Financial analytics',
   'Sustainable development',
-  'Baking',
 ];
+export const personalInterests = ['Baking'];
+export const interests = [...professionalInterests, ...personalInterests];
 export const routes = [
   'about',
   'experience',
