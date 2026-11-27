@@ -2,7 +2,7 @@
 
 Professional portfolio showcasing my expertise in Data Science, AI, Research and Software Engineering.
 
-A responsive Next.js App Router application with strict TypeScript, Tailwind CSS, structured content, seven evidence-aware project case studies, research records, an MDX publishing workflow and a free local BM25 portfolio assistant.
+A responsive Next.js App Router application with strict TypeScript, Tailwind CSS, structured content, eight evidence-aware project case studies, research records, an MDX publishing workflow and a free local BM25 portfolio assistant.
 
 ## Run locally
 
@@ -21,6 +21,7 @@ Open http://127.0.0.1:3000. Copy `.env.example` to `.env.local` if configuring o
 npm run lint
 npm run typecheck
 npm test
+npm run evaluate:assistant
 npm run build
 npx playwright install chromium
 npm run test:e2e
@@ -37,12 +38,13 @@ For an existing Windows Edge installation, set `PLAYWRIGHT_CHANNEL=msedge` inste
 - `src/lib/blog.ts`: validates metadata and loads reviewed, non-draft MDX from the repository.
 - `src/lib/assistant.ts`: chunked local BM25 retrieval over public profile, project, research, skill and career content. It returns source links, handles contextual follow-ups, resets locally and abstains on unsupported questions. No LLM or query network access.
 - `src/lib/assistant-evaluation.ts`: curated retrieval questions and ranking metrics used by the automated regression test.
-- `src/components/project-case-study.tsx`: reusable evidence-aware case-study presentation for all seven projects.
+- `src/components/project-case-study.tsx`: reusable evidence-aware case-study presentation for all eight projects.
+- `src/lib/project-images.ts`: reviewed screenshot and chart metadata, captions and provenance labels.
 - `docs/asset-manifest.md`: source and provenance for the portrait, IA icon, generated social card and reviewed project screenshots.
 - `content/blog`: unpublished draft templates. Public GitHub source includes these outlines; they are not published as authored articles on the website.
 - `tests`: content, validation, component and API tests plus desktop/mobile Playwright and axe checks.
 
-The site uses restrained CSS transitions with reduced-motion support rather than adding an animation runtime. The home hero pairs the supplied portrait with an original CSS composition; the flagship overview is conceptual, not research evidence. Three CS-IRCFS screenshots come from the linked public repository and are labelled synthetic demonstration data. No image-generation or paid service is needed.
+The concise homepage links to dedicated Work and Research pages. Project previews use consistent frames without cropping charts or zooming on hover; case-study visuals can be enlarged. Original charts, application screenshots, diagrams and demonstration data are distinguished in their captions. The assistant panel and retrieval index load on demand. No image-generation or paid service is needed.
 
 ## Updating content
 
@@ -68,7 +70,7 @@ The production `SITE_URL` is set to the HTTPS site origin for canonical metadata
 
 Rendered pages use a nonce-based Content Security Policy. The nonce requires request-time rendering; see [Architecture](docs/architecture.md) for caching and performance implications and [Deployment](docs/deployment.md) for production checks.
 
-Keep contact delivery disabled until the provider and deployment-wide limiter are configured and verified. Leave `NEXT_PUBLIC_ASSISTANT_ENABLED=true`, or set it to `false` at build time to remove the assistant UI. V3 has not been pushed or deployed; the current public production site remains unchanged. The local production build scored 97 desktop and 73 mobile in Lighthouse 13.6.0, with 100 accessibility, best-practices and SEO scores in both modes. See [Engineering report](docs/engineering-report.md) for the measurement context and mobile performance limitation. Re-run Lighthouse and the smoke checks against the deployed V3 site after release.
+Keep contact delivery disabled until the provider and deployment-wide limiter are configured and verified. Leave `NEXT_PUBLIC_ASSISTANT_ENABLED=true`, or set it to `false` at build time to remove the assistant UI. V3 was merged through pull request #1. V4 is implemented on `codex/portfolio-v4-performance` for review against `main`; this work does not merge or deploy it to production. Historical Lighthouse scores describe V3 only; V4 performance has not been measured. See [Engineering report](docs/engineering-report.md) for validation and limitations.
 
 GitHub repository creation is separate from application deployment. The repository is public and MIT-licensed. Avoid committing private CVs, `.env` files, tokens or participant data.
 
@@ -76,6 +78,8 @@ GitHub repository creation is separate from application deployment. The reposito
 
 Public content is drawn from the supplied CV and user-provided development brief. CS-IRCFS and Arrowstack Identity READMEs were inspected through the connected GitHub service. The CS-IRCFS gallery images come from its public repository and are marked synthetic. Project test suites were not independently rerun here. No live demo, paper acceptance, employment outcome, research impact or certification document is invented.
 
-Remaining content assets: a public-safe CV PDF, reviewed thesis/manuscript and research figures, screenshots for six projects, certificate records and author-approved articles. Production email delivery and deployment-wide rate limiting remain unconfigured; a custom domain is optional.
+Remaining content assets: a public-safe CV PDF, reviewed public thesis/manuscript and citation details, empirical production-optimization charts, certificate records and author-approved articles. Selected aggregate research figures and project screenshots are included with provenance and limitations. Production email delivery and deployment-wide rate limiting remain unconfigured; a custom domain is optional.
+
+Local work-sample PDFs, research exports, review screenshots, document dependencies and machine-specific preparation scripts are ignored and preserved locally. Commit only reviewed public assets under `public/`; do not add private CVs or raw participant records. On Windows, if Turbopack stalls, `npx next build --webpack` is an alternative production build using the same application source. The full browser suite requires that production build and uses port 3100.
 
 See [Architecture](docs/architecture.md), [Deployment](docs/deployment.md), [Roadmap](docs/roadmap.md), [Asset manifest](docs/asset-manifest.md) and the [Engineering report](docs/engineering-report.md) for implementation evidence and outstanding validation.

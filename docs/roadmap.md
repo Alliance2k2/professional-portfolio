@@ -1,6 +1,17 @@
 # Portfolio roadmap
 
-## Implemented in the V3 branch
+## V4 implementation and review — 27 November 2026
+
+V4 already exists locally in `4dccf29`, based on merged V3 at `95b9633`. The development branch is `codex/portfolio-v4-performance`; release requires PR review and passing GitHub checks before merging into `main`.
+
+- Implemented: concise portrait homepage, dedicated Work/Research navigation, eight project case studies, consistent image previews, original charts and screenshots, and an enlargeable visual gallery.
+- Implemented: on-demand assistant panel, expanded development/held-out retrieval evaluation, typo handling and reviewed multilingual query aliases.
+- Corrected during synchronization: architecture follow-up excerpts and numeric country-count excerpts; added regression and task-manager route coverage.
+- Preserved: latest approved portrait caption, existing source and local work artifacts. Local research exports, private-document candidates and preparation tools are excluded from Git.
+- Remaining: independent retrieval assessment, V4 Lighthouse and deployed smoke checks, reviewed public documents, verified contact delivery/rate limiting and author-approved articles.
+- No new V4 requirements document was supplied; this status describes observed code and does not claim every possible performance improvement is complete.
+
+## Historical V3 implementation (merged in PR #1)
 
 - Recruiter-oriented homepage, local portrait, IA favicon, dark/light design, responsive navigation and direct contact links.
 - Seven descriptive project titles with creative subtitles and a reusable, evidence-aware case-study component.
@@ -26,7 +37,7 @@
 ## Awaiting production configuration or independent validation
 
 - Verified contact-email credentials and deployment-wide rate limiting; email delivery stays disabled until both exist.
-- Public production browser smoke checks and Lighthouse measurements after V3 is deployed. The recorded local Lighthouse scores do not cover the deployed host.
+- Public production browser smoke checks and V4 Lighthouse measurements after release. The recorded V3 local Lighthouse scores do not cover V4 or the deployed host.
 - External evaluation of assistant retrieval on recruiter questions beyond the curated regression set, plus human review of abstentions and source quality.
 - Production CSP verification against Vercel caching behavior, and periodic dependency/security review.
 - Optional custom domain and its HTTPS/canonical URL configuration.
