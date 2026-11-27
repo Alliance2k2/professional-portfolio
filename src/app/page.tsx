@@ -1,327 +1,102 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Suspense } from 'react';
 import {
   MapPin,
-  Github as GithubIcon,
+  Github,
   Linkedin,
-  Database,
-  Braces,
+  BriefcaseBusiness,
   FlaskConical,
-  Sprout,
-  Layers,
-  Globe2,
 } from 'lucide-react';
-import { profile, projects, skills, experience, research } from '@/lib/content';
-import { Collaboration, Timeline } from '@/components/shared';
-import { Github } from '@/components/github';
+import { profile } from '@/lib/content';
+
 export default function Home() {
   return (
     <>
-      <section className="hero container">
-        <div className="hero-copy">
-          <div className="availability">
-            <span /> DATA SCIENCE · MATHEMATICAL STATISTICS · APPLIED AI
-          </div>
+      <section className="container home-intro">
+        <div className="home-intro-copy">
+          <p className="eyebrow">DATA SCIENCE · RESEARCH · ENGINEERING</p>
           <h1>
-            Turning complexity
-            <br />
-            into{' '}
-            <span>
-              meaningful
-              <br className="hero-break" /> impact.
-            </span>
+            Turning complexity into{' '}
+            <span className="accent">meaningful impact.</span>
           </h1>
-          <p className="hero-name">I’m Irigenera Alliance.</p>
-          <p className="hero-description">
-            Data science professional and research fellow with an MSc in
-            Mathematical Sciences specializing in Data Science. I connect
-            statistical analysis, applied AI and software development to{' '}
-            <strong>research questions and practical decisions.</strong>
+          <p className="home-name">I’m Irigenera Alliance.</p>
+          <p className="home-description">
+            A data science professional and research fellow in Kigali. I connect
+            statistical thinking, practical data systems and applied research.
           </p>
           <div className="hero-actions">
             <Link href="/projects" className="button primary">
               Explore my work
             </Link>
-            <Link href="/resume" className="button secondary">
-              View résumé
+            <Link href="/research" className="button secondary">
+              Explore research
             </Link>
           </div>
           <div className="hero-social">
             <span>
-              <MapPin size={15} /> Kigali, Rwanda
+              <MapPin size={16} /> Kigali, Rwanda
             </span>
             <a href={profile.github} aria-label="GitHub">
-              <GithubIcon size={19} />
+              <Github size={20} />
             </a>
             <a href={profile.linkedin} aria-label="LinkedIn">
-              <Linkedin size={19} />
+              <Linkedin size={20} />
             </a>
+            <Link href="/resume">Résumé</Link>
           </div>
         </div>
-        <div className="hero-visual">
-          <div className="visual-top">
-            <span>THE INTERSECTION OF</span>
-            <span className="live-indicator">IDEAS & IMPACT</span>
-          </div>
-          <div className="orbit-field" aria-hidden="true">
-            <div className="orbit orbit-one" />
-            <div className="orbit orbit-two" />
-            <div className="orbit orbit-three" />
-            <div className="axis axis-x" />
-            <div className="axis axis-y" />
-            <div className="core">
-              <Image
-                src="/alliance-irigenera.jpg"
-                alt="Portrait of Irigenera Alliance"
-                width={440}
-                height={440}
-                sizes="(max-width: 760px) 126px, 148px"
-                className="hero-portrait"
-                preload
-              />
-            </div>
-            <span className="orbit-label label-data">
-              <Database size={17} /> Data science
-            </span>
-            <span className="orbit-label label-research">
-              <FlaskConical size={17} /> Research
-            </span>
-            <span className="orbit-label label-code">
-              <Braces size={17} /> Engineering
-            </span>
-            <i className="point p1" />
-            <i className="point p2" />
-            <i className="point p3" />
-          </div>
-          <div className="visual-caption">
-            <span>
-              MATHEMATICAL THINKING.
-              <br />
-              HUMAN-CENTERED SOLUTIONS.
-            </span>
-            <span className="coordinate">
-              01°56′ S<br />
-              30°03′ E
-            </span>
-          </div>
-          <span className="sr-only">
-            Orbit graphic labels data science, research and engineering.
-          </span>
-        </div>
+        <figure className="home-portrait">
+          <Image
+            src="/alliance-irigenera.jpg"
+            alt="Irigenera Alliance"
+            width={900}
+            height={900}
+            sizes="(max-width: 760px) 90vw, 380px"
+            preload
+          />
+          <figcaption>
+            <strong>Data. Research. Real-world impact.</strong>
+            <span>Turning complex questions into useful solutions.</span>
+          </figcaption>
+        </figure>
       </section>
-      <div className="credential-strip">
-        <div className="container">
-          <span>
-            GROUNDED IN RESEARCH.
-            <br />
-            <strong>BUILT FOR APPLICATION.</strong>
+      <section
+        className="container home-destinations"
+        aria-label="Explore the portfolio"
+      >
+        <Link href="/projects" className="home-destination">
+          <span className="destination-icon">
+            <BriefcaseBusiness size={28} />
           </span>
-          <span>
-            AIMS <small>Rwanda</small>
-          </span>
-          <span>
-            University
-            <br />
-            <strong>of Rwanda</strong>
-          </span>
-          <span>
-            National Bank
-            <br />
-            <strong>of Rwanda</strong>
-          </span>
-          <span>
-            Arrowstack
-            <br />
-            <strong>Technologies</strong>
-          </span>
-        </div>
-      </div>
-      <section className="section container intro-section">
-        <p className="eyebrow">A LITTLE ABOUT MY APPROACH</p>
-        <div>
-          <h2>
-            Rigorous thinking.
-            <br />
-            <span className="muted">Practical possibilities.</span>
-          </h2>
-          <p>{profile.summary}</p>
-          <Link className="text-link" href="/about">
-            More about me
-          </Link>
-        </div>
-      </section>
-      <section className="section container">
-        <div className="section-heading">
           <div>
-            <p className="eyebrow">SELECTED WORK</p>
-            <h2>Research meets implementation.</h2>
-          </div>
-          <Link href="/projects">Explore all projects</Link>
-        </div>
-        <Link className="flagship" href="/projects/cs-ircfs">
-          <div className="flagship-visual" aria-hidden="true">
-            <div className="map-grid" />
-            <div className="map-line line-one" />
-            <div className="map-line line-two" />
-            <div className="map-region region-one" />
-            <div className="map-region region-two" />
-            <div className="map-pin pin-one">
-              <Sprout size={22} />
-            </div>
-            <div className="map-pin pin-two">
-              <Layers size={20} />
-            </div>
-            <div className="map-pin pin-three">
-              <Globe2 size={20} />
-            </div>
-            <div className="map-title">
-              <span>CS—IRCFS</span>
-              <small>COMMUNITY → EVIDENCE → ACTION</small>
-            </div>
-            <span className="visual-note">CONCEPTUAL SYSTEM ILLUSTRATION</span>
-          </div>
-          <div className="flagship-copy">
-            <span className="eyebrow">FLAGSHIP PROJECT · DATA SYSTEMS</span>
-            <h3>{projects[0].title}</h3>
-            <p className="project-subtitle">{projects[0].subtitle}</p>
+            <p className="eyebrow">WORK</p>
+            <h2>Built for real questions.</h2>
             <p>
-              {projects[0].summary} Connecting community reports, geospatial
-              insight and accountable workflows.
+              Agricultural platforms, analytical dashboards and useful
+              applications.
             </p>
-            <div className="tags">
-              {projects[0].tags.slice(0, 4).map((t) => (
-                <span key={t}>{t}</span>
-              ))}
-            </div>
-            <span className="text-link">Explore the case study</span>
+            <span className="text-link">Browse projects</span>
           </div>
         </Link>
-        <div className="project-grid home-projects">
-          {projects.slice(1, 3).map((p, i) => (
-            <Link
-              className="project-card"
-              key={p.slug}
-              href={`/projects/${p.slug}`}
-            >
-              <div className={`project-symbol symbol-${i}`} aria-hidden="true">
-                {i === 0 ? <FlaskConical size={34} /> : <Braces size={34} />}
-              </div>
-              <span className="eyebrow">{p.category}</span>
-              <h3>{p.title}</h3>
-              <p className="project-subtitle">{p.subtitle}</p>
-              <p>{p.summary}</p>
-              <div className="tags">
-                {p.tags.slice(0, 3).map((t) => (
-                  <span key={t}>{t}</span>
-                ))}
-              </div>
-              <span className="card-bottom">
-                {p.status}
-                <span>View case study</span>
-              </span>
-            </Link>
-          ))}
-        </div>
-      </section>
-      <section className="research-band">
-        <div className="container section">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">RESEARCH & CURIOSITY</p>
-              <h2>
-                Better questions.
-                <br />
-                Deeper understanding.
-              </h2>
-            </div>
-            <p>
-              Exploring the patterns behind complex systems
-              <br />
-              and the people they affect.
-            </p>
-          </div>
-          {research.map((r) => (
-            <Link
-              className="research-row"
-              key={r.slug}
-              href={`/research/${r.slug}`}
-            >
-              <span className="research-status">{r.status}</span>
-              <div>
-                <h3>{r.title}</h3>
-                <p>{r.description}</p>
-              </div>
-              <span className="text-link">Read more</span>
-            </Link>
-          ))}
-        </div>
-      </section>
-      <section className="section container">
-        <div className="section-heading">
+        <Link href="/research" className="home-destination">
+          <span className="destination-icon">
+            <FlaskConical size={28} />
+          </span>
           <div>
-            <p className="eyebrow">A CONNECTED TOOLKIT</p>
-            <h2>From analysis to application.</h2>
+            <p className="eyebrow">RESEARCH</p>
+            <h2>Understand the patterns.</h2>
+            <p>
+              Public health statistics, functional data analysis and community
+              evidence.
+            </p>
+            <span className="text-link">Explore research</span>
           </div>
-          <Link href="/skills">Technical expertise</Link>
-        </div>
-        <div className="skills-grid">
-          {skills.map((s, i) => (
-            <div className="skill-card" key={s.title}>
-              <span className="skill-icon">
-                {
-                  [
-                    <Database key="d" />,
-                    <Layers key="l" />,
-                    <Braces key="b" />,
-                    <FlaskConical key="f" />,
-                  ][i]
-                }
-              </span>
-              <h3>{s.title}</h3>
-              <p>{s.items.slice(0, 6).join(' · ')}</p>
-              <Link href={s.evidence}>See it in practice</Link>
-            </div>
-          ))}
-        </div>
+        </Link>
       </section>
-      <section className="section container career-section">
-        <div>
-          <p className="eyebrow">THE JOURNEY SO FAR</p>
-          <h2>
-            Learning.
-            <br />
-            Building.
-            <br />
-            <span className="accent">Contributing.</span>
-          </h2>
-          <Link href="/experience" className="text-link">
-            View full experience
-          </Link>
-        </div>
-        <Timeline items={experience} />
-      </section>
-      <div className="container">
-        <Suspense fallback={<p>Loading public repositories…</p>}>
-          <Github />
-        </Suspense>
+      <div className="container home-contact">
+        <p>Interested in working together?</p>
+        <Link href="/contact">Let’s connect</Link>
       </div>
-      <section className="section container writing-preview">
-        <div>
-          <p className="eyebrow">FIELD NOTES</p>
-          <h2>Ideas worth exploring.</h2>
-        </div>
-        <div>
-          <p>
-            Notes on applied AI, public health analytics and building
-            responsible data systems. Articles will appear after review.
-          </p>
-          <Link href="/blog" className="text-link">
-            Visit the writing desk
-          </Link>
-        </div>
-      </section>
-      <Collaboration />
     </>
   );
 }

@@ -45,6 +45,13 @@ export default async function Research({
         title={item.title}
         description={item.description}
       />
+      {item.figures?.length ? (
+        <EvidenceGallery
+          key={item.slug}
+          title="Research visuals"
+          images={item.figures}
+        />
+      ) : null}
       <div className="research-record prose">
         <section>
           <h2>Research overview</h2>
@@ -100,14 +107,12 @@ export default async function Research({
             </div>
           </section>
         ) : null}
-        {item.figures?.length ? (
-          <EvidenceGallery title="Figures" images={item.figures} />
-        ) : null}
         <section className="research-materials">
           <h2>Publication and materials</h2>
           <p>
             <strong>Publication status:</strong>{' '}
-            {item.publicationStatus ?? 'Not specified in the supplied materials.'}
+            {item.publicationStatus ??
+              'Not specified in the supplied materials.'}
           </p>
           {item.materialsNote ? <p>{item.materialsNote}</p> : null}
           {item.download ? (

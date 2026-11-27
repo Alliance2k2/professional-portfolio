@@ -73,6 +73,7 @@ test('all essential pages and case studies resolve', async ({ page }) => {
     '/projects/financial-stability-africa',
     '/projects/malaria-functional-analysis',
     '/projects/arrowstack-identity',
+    '/projects/arrowstack-task-manager',
     '/projects/last-mile-logistics',
     '/projects/production-optimization',
     '/research/malaria',

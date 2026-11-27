@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import type { Project } from '@/lib/content';
+import { ProjectPreview } from '@/components/project-preview';
 export function ProjectBrowser({ projects }: { projects: Project[] }) {
   const [filter, setFilter] = useState('All work');
   const [query, setQuery] = useState('');
@@ -37,26 +38,29 @@ export function ProjectBrowser({ projects }: { projects: Project[] }) {
           />
         </label>
       </div>
-      <div className="project-grid">
+      <div className="project-grid project-image-list">
         {filtered.map((p) => (
           <Link
             href={`/projects/${p.slug}`}
             className="project-card"
             key={p.slug}
           >
-            <span className="eyebrow">{p.category}</span>
-            <h2>{p.title}</h2>
-            <p className="project-subtitle">{p.subtitle}</p>
-            <p>{p.summary}</p>
-            <div className="tags">
-              {(p.technologies ?? p.tags).map((t) => (
-                <span key={t}>{t}</span>
-              ))}
+            <ProjectPreview slug={p.slug} />
+            <div className="project-card-copy">
+              <span className="eyebrow">{p.category}</span>
+              <h2>{p.title}</h2>
+              <p className="project-subtitle">{p.subtitle}</p>
+              <p>{p.summary}</p>
+              <div className="tags">
+                {(p.technologies ?? p.tags).map((t) => (
+                  <span key={t}>{t}</span>
+                ))}
+              </div>
+              <span className="card-bottom">
+                {p.status}
+                <span>View case study</span>
+              </span>
             </div>
-            <span className="card-bottom">
-              {p.status}
-              <span>View case study</span>
-            </span>
           </Link>
         ))}
       </div>

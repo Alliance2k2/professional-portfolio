@@ -21,7 +21,7 @@ function getThemeSnapshot() {
   return document.documentElement.dataset.theme !== 'light';
 }
 function getServerThemeSnapshot() {
-  return true;
+  return false;
 }
 export function Navigation() {
   const path = usePathname();

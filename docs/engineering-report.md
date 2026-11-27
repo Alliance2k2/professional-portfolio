@@ -1,4 +1,53 @@
-# Engineering report — V3
+# Engineering report — V4 synchronization
+
+**Assessment date:** 27 November 2026
+
+**Repository:** `Alliance2k2/professional-portfolio`
+
+**Development branch:** `codex/portfolio-v4-performance`; PR target: `main`.
+
+Reviewed commits: `4dccf29` contains the existing V4 implementation; `c2e5d8b` contains the assistant corrections, approved caption, local-artifact exclusions and expanded validation. Documentation is recorded in a separate follow-up commit. Publishing this branch requests review only; no force push or merge is part of this task. GitHub CI and Vercel preview results must be checked on the PR before release.
+
+## Current audit and preservation
+
+Fetched GitHub before editing. `origin/main` was `95b9633`, the merged V3 PR #1; local HEAD was `4dccf29`, one commit ahead and zero behind. V4 was already implemented, so no redesign or recreation was needed. The only tracked working changes at entry were the approved homepage caption and generated development route imports in `next-env.d.ts`. Local `main` was behind GitHub; it was not reset or rewritten.
+
+Reviewed untracked paths: repository inventories/README exports, original analytical chart exports and CSV summaries, browser review images/check scripts, Python preparation scripts, a contact sheet and an application work-sample PDF. These are retained locally and excluded using explicit ignore rules. Inaccessible `.pdf-deps` package directories were not read or altered; they are document-tool dependencies excluded from publication. No private PDF, raw CSV export or machine-specific preparation script is included in the reviewed commits. The generated `next-env.d.ts` remains outside the commit.
+
+The V4 baseline adds eight project records, consistent original-image previews, per-project screenshots/charts with provenance, dedicated Work/Research pages, a concise portrait homepage, an enlargeable gallery, an on-demand assistant panel and expanded retrieval evaluations. The approved portrait caption is “Data. Research. Real-world impact.” / “Turning complex questions into useful solutions.”
+
+## Corrections in this review
+
+- Kept each project's architecture flow together in the assistant index and prioritized architecture sentences for architecture questions, fixing contextual follow-ups that omitted the documented stack.
+- Prioritized relevant quantity-bearing sentences for count questions, fixing an erroneous abstention on the documented 13-country analysis. Added an explicit regression test.
+- Joined education labels to their qualification/institution and removed duplicate excerpt sentences, fixing the education follow-up failure discovered in the full browser suite. Added a unit regression.
+- Added task-manager detail-page coverage to the existing desktop/mobile route checks.
+- Scoped lint away from preserved local document tooling and review artifacts.
+- Included the separate held-out evaluation command in GitHub Actions.
+- Updated README and roadmap to describe observed V4 behavior and distinguish historical V3 measurements from current validation.
+
+## Security review
+
+Checked tracked text for common GitHub/OpenAI/AWS token formats, private-key headers and credential-bearing URLs without printing possible secret values. No matches were found. `.env.example` contains empty configuration placeholders; no real environment file is tracked. Reviewed the public asset inventory and existing provenance captions: public assets consist of portrait, application images, aggregate analytical figures and labeled diagrams. No private PDF or raw research export is staged. This is a targeted repository review, not a guarantee that every possible secret format is detectable or an independent disclosure review of the underlying research.
+
+## Current validation
+
+| Check | V4 result |
+| --- | --- |
+| Lint | `npm run lint` passed. |
+| Type checking | `npm run typecheck` and production-build TypeScript passed. |
+| Unit suite | `npm test`: 20 passed across 2 files. |
+| Held-out evaluation | `npm run evaluate:assistant`: 1 reporting test passed; quality metrics below. |
+| Production build | `npx next build --webpack` passed, generating 28 page-data entries. |
+| Browser suite | `PLAYWRIGHT_CHANNEL=msedge npm run test:e2e`: all 12 desktop/mobile tests passed (1.9 minutes). |
+| Dependency review | `npm audit`: 0 vulnerabilities, including development dependencies. |
+| Patch hygiene | `git diff --check` passed. |
+
+The held-out set contains 65 cases (42 supported and 23 expected abstentions). Top-one retrieval and citation correctness were 90.48%, Recall@3 97.62%, MRR 0.9365, abstention accuracy 100%, and valid citation rate 100%. Measured response latency was p50 1.65 ms / p95 7.86 ms on this machine under concurrent browser testing; these are not user-facing or production latency guarantees. Four cases selected a different page than expected (thesis publication status, authentication security, flagship geospatial tools and thesis DOI). The reporting test does not enforce perfect ranking. These are remaining retrieval-quality limitations, not independently validated factual-answer accuracy. The held-out cases were not used to tune the fixes in this review.
+
+Windows subprocess restrictions require permitted execution for Node workers. The installed Edge channel is used for Playwright because the bundled Chromium executable is absent. Production validation uses Webpack after the default Turbopack build stalled in the earlier session. No package upgrade or website redesign was needed. The historical report that follows is retained for provenance; its scores and deployment statements describe the earlier V3 task only.
+
+## Historical engineering report — V3
 
 **Assessment date:** 26 November 2026
 
