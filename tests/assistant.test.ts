@@ -96,6 +96,22 @@ describe('local portfolio retrieval', () => {
     expect(answerQuestion('What are the results?').abstained).toBe(true);
   });
 
+  it('includes the documented quantity when answering a country-count question', () => {
+    const answer = answerQuestion(
+      'How many countries are included in the financial stability analysis?',
+    );
+    expect(answer.abstained).not.toBe(true);
+    expect(answer.text).toContain('13 African countries');
+    expect(answer.sources[0]?.href).toBe('/projects/financial-stability-africa');
+  });
+
+  it('answers education follow-ups with qualifications and institutions', () => {
+    const answer = answerQuestion('What about that?', 'What is your education?');
+    expect(answer.text).toContain('MSc');
+    expect(answer.text).toContain('University of Rwanda');
+    expect(answer.sources[0]?.href).toBe('/education');
+  });
+
   it('keeps development and held-out evaluation examples separate', () => {
     expect(assistantEvaluationDataset.length).toBeGreaterThanOrEqual(100);
     expect(

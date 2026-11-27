@@ -10,3 +10,13 @@ playwright-report/
 test-results/
 *.tsbuildinfo
 .openai/
+
+# Local research exports, document tooling and review artifacts (not public assets).
+.pdf-deps/
+work-sample-assets/
+Alliance_Irigenera_Analytical_Work_Sample.pdf
+asset-contact.jpg
+github-repositories.json
+build_work_sample.py
+inspect_repos.py
+prepare_project_images.py

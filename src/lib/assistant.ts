@@ -61,7 +61,7 @@ const documents: KnowledgeDocument[] = [
     href: '/education',
     label: 'Education',
     title: `${item.title} — ${item.organization}`,
-    text: `Academic degree and education record. ${item.title} at ${item.organization}. ${item.date}. ${item.detail}`,
+    text: `Academic degree and education record: ${item.title} at ${item.organization}. ${item.date}. ${item.detail}`,
   })),
   {
     id: 'skills-overview',
@@ -102,7 +102,9 @@ const documents: KnowledgeDocument[] = [
       project.contribution,
       project.architectureSource,
       ...(project.objectives ?? []),
-      ...(project.architecture ?? []).flatMap((step) => [step.stage, step.detail]),
+      project.architecture?.length
+        ? `Architecture: ${project.architecture.map((step) => `${step.stage}: ${step.detail}`).join('; ')}`
+        : undefined,
       ...(project.technicalChallenges ?? []),
       ...(project.lessonsLearned ?? []),
       ...(project.futureImprovements ?? []),
@@ -521,8 +523,7 @@ function extractRelevantAnswer(
   const contextualQuery =
     context && isFollowUp(query) ? context.slice(0, 240) + ' ' + query : query;
   const queryTerms = weightedQueryTerms(contextualQuery);
-  const selected = text
-    .split(/(?<=[.!?])\s+/)
+  const selected = Array.from(new Set(text.split(/(?<=[.!?])\s+/)))
     .map((sentence, index) => {
       const uniqueTerms = new Set(tokenizeDocument(sentence));
       let score = 0;
@@ -530,6 +531,15 @@ function extractRelevantAnswer(
         if (!NON_SPECIFIC_EVIDENCE_TERMS.has(term)) {
           score += queryTerms.get(term) ?? 0;
         }
+      }
+      if (queryTerms.has('architecture') && uniqueTerms.has('architecture')) {
+        score += 4;
+      }
+      if (
+        /\b(how many|how much|number of|count of)\b/i.test(contextualQuery) &&
+        /\b(?:\d[\d,]*(?:\.\d+)?|zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen)\b/i.test(sentence)
+      ) {
+        score += score > 0 ? 4 : 0;
       }
       return { sentence, index, score };
     })

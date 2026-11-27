@@ -55,8 +55,8 @@ export default function Home() {
             preload
           />
           <figcaption>
-            <strong>Mathematical thinking.</strong>
-            <span>Practical possibilities.</span>
+            <strong>Data. Research. Real-world impact.</strong>
+            <span>Turning complex questions into useful solutions.</span>
           </figcaption>
         </figure>
       </section>
