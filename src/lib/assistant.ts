@@ -42,6 +42,13 @@ const documents: KnowledgeDocument[] = [
     title: 'Contact and professional links',
     text: `For professional inquiries, email ${profile.email}. GitHub: ${profile.github}. LinkedIn: ${profile.linkedin}.`,
   },
+  {
+    id: 'resume',
+    href: '/resume',
+    label: 'Résumé',
+    title: 'Public résumé and PDF',
+    text: 'The public online résumé can be printed or saved as a PDF. The original CV is kept private because it includes a telephone number. A reviewed public CV PDF can be added later.',
+  },
   ...experience.map((item, index) => ({
     id: `experience-${index}`,
     href: '/experience',
@@ -133,10 +140,41 @@ const documents: KnowledgeDocument[] = [
 ];
 
 const STOP_WORDS = new Set(
-  'a an and are as at be by can do did for from has how i in is it its my of on or tell that the their this to was what when where which who why with would your about me please'.split(
+  'a an and are as at be by can do did for from has how i in is it its my of on or tell that the their this to was what when where which who why with would your about me please more le la les un une des du de au aux en est sont qui que quoi quel quelle quels quelles mon ma mes son sa ses pour dans par sur avec ou je vous il elle nous bwa mu ku kuri na ni ya yo iki igihe buri ki ubuhe iyihe'.split(
     ' ',
   ),
 );
+
+const QUERY_ALIASES: Record<string, string> = {
+  uburezi: 'education',
+  ubushakashatsi: 'research',
+  imishinga: 'project',
+  umushinga: 'project',
+  ubuhanga: 'skill',
+  ubunararibonye: 'experience',
+  formation: 'education',
+  diplome: 'education',
+  etude: 'education',
+  etudes: 'education',
+  maitrise: 'msc',
+  these: 'thesis',
+  recherche: 'research',
+  projet: 'project',
+  competence: 'skill',
+  competences: 'skill',
+  travail: 'work',
+  contacter: 'contact',
+  joindre: 'contact',
+  donnee: 'data',
+  donnees: 'data',
+  financiere: 'financial',
+  financier: 'financial',
+  paludisme: 'malaria',
+  banque: 'bank',
+  nationale: 'national',
+  afrique: 'africa',
+  stabilite: 'stability',
+};
 
 const SYNONYMS: Record<string, string[]> = {
   ai: ['artificial intelligence', 'machine learning', 'applied ai'],
@@ -149,6 +187,7 @@ const SYNONYMS: Record<string, string[]> = {
   contact: ['email', 'github', 'linkedin'],
   cv: ['resume', 'résumé', 'education', 'experience'],
   degree: ['education', 'qualification', 'university'],
+  experience: ['career', 'employment', 'internship', 'role'],
   finance: ['financial analytics', 'banking', 'financial stability'],
   financial: ['finance', 'banking', 'economic', 'financial stability'],
   hobby: ['interest', 'baking'],
@@ -171,6 +210,7 @@ const SYNONYMS: Record<string, string[]> = {
 };
 
 function stem(token: string): string {
+  if (token.endsWith('sis') || token.endsWith('is')) return token;
   if (token.length > 5 && token.endsWith('ies')) return `${token.slice(0, -3)}y`;
   if (token.length > 5 && token.endsWith('ing')) {
     const base = token.slice(0, -3);
@@ -184,22 +224,29 @@ function stem(token: string): string {
   return token;
 }
 
+function tokenize(value: string): string[] {
+  return value
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('en')
+    .replace(/&/g, ' and ')
+    .replace(/[^a-z0-9+#]+/g, ' ')
+    .split(/\s+/)
+    .map(stem)
+    .filter(
+      (term) => (term.length > 1 || term === 'r' || term === 'c') && !STOP_WORDS.has(term),
+    );
+}
+
 export function normalizeQuery(value: string): string[] {
   return Array.from(
-    new Set(
-      value
-        .normalize('NFKD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .toLocaleLowerCase('en')
-        .replace(/&/g, ' and ')
-        .replace(/[^a-z0-9+#]+/g, ' ')
-        .split(/\s+/)
-        .map(stem)
-        .filter(
-          (term) => (term.length > 1 || term === 'r' || term === 'c') && !STOP_WORDS.has(term),
-        ),
-    ),
+    new Set(tokenize(value).map((term) => QUERY_ALIASES[term] ?? term)),
   );
+}
+
+/** Document tokens preserve term frequency for BM25. Query tokens are unique. */
+export function tokenizeDocument(value: string): string[] {
+  return tokenize(value);
 }
 
 function splitIntoChunks(document: KnowledgeDocument): KnowledgeChunk[] {
@@ -225,7 +272,7 @@ function splitIntoChunks(document: KnowledgeDocument): KnowledgeChunk[] {
     id: `${document.id}-${index}`,
     text,
     score: 0,
-    terms: normalizeQuery(text),
+    terms: tokenizeDocument(text),
   }));
 }
 
@@ -250,9 +297,59 @@ const averageLength =
   indexedChunks.reduce((sum, chunk) => sum + chunk.terms.length, 0) /
   Math.max(indexedChunks.length, 1);
 
+export const assistantIndexStats = {
+  chunkCount: indexedChunks.length,
+  vocabularySize: documentFrequency.size,
+  averageDocumentLength: averageLength,
+};
+
 const MIN_RELEVANCE_SCORE = 1.25;
 const BM25_K1 = 1.5;
 const BM25_B = 0.75;
+const vocabulary = Array.from(documentFrequency.keys());
+
+function isOneEditAway(left: string, right: string): boolean {
+  if (left === right || Math.abs(left.length - right.length) > 1) return false;
+  let leftIndex = 0;
+  let rightIndex = 0;
+  let edits = 0;
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] === right[rightIndex]) {
+      leftIndex += 1;
+      rightIndex += 1;
+      continue;
+    }
+    edits += 1;
+    if (edits > 1) return false;
+    if (
+      left.length === right.length &&
+      left[leftIndex] === right[rightIndex + 1] &&
+      left[leftIndex + 1] === right[rightIndex]
+    ) {
+      leftIndex += 2;
+      rightIndex += 2;
+    } else if (left.length > right.length) {
+      leftIndex += 1;
+    } else if (right.length > left.length) {
+      rightIndex += 1;
+    } else {
+      leftIndex += 1;
+      rightIndex += 1;
+    }
+  }
+  if (leftIndex < left.length || rightIndex < right.length) edits += 1;
+  return edits === 1;
+}
+
+function uniqueTypoCandidate(term: string): string | undefined {
+  if (term.length < 5 || documentFrequency.has(term)) return undefined;
+  const candidates = vocabulary.filter(
+    (candidate) =>
+      Math.abs(candidate.length - term.length) <= 1 &&
+      isOneEditAway(term, candidate),
+  );
+  return candidates.length === 1 ? candidates[0] : undefined;
+}
 
 function weightedQueryTerms(query: string): Map<string, number> {
   const terms = new Map<string, number>();
@@ -261,6 +358,8 @@ function weightedQueryTerms(query: string): Map<string, number> {
   };
   for (const term of normalizeQuery(query)) {
     add(term, 1);
+    const corrected = uniqueTypoCandidate(term);
+    if (corrected) add(corrected, 0.58);
     for (const synonym of SYNONYMS[term] ?? []) {
       for (const expanded of normalizeQuery(synonym)) add(expanded, 0.42);
     }
@@ -292,7 +391,7 @@ function scoreChunk(chunk: KnowledgeChunk, queryTerms: Map<string, number>) {
     chunk.href.startsWith('/research/') &&
     (queryTerms.has('research') || queryTerms.has('thesis'))
   ) {
-    sourceBoost *= 1.2;
+    sourceBoost *= 1.45;
   }
   if (
     chunk.href === '/education' &&
@@ -311,6 +410,20 @@ function scoreChunk(chunk: KnowledgeChunk, queryTerms: Map<string, number>) {
     sourceBoost *= 1.2;
   }
   if (
+    chunk.href === '/experience' &&
+    ['experience', 'career', 'employment', 'internship', 'role'].some((term) =>
+      queryTerms.has(term),
+    )
+  ) {
+    sourceBoost *= 1.3;
+  }
+  if (
+    chunk.href === '/resume' &&
+    ['resume', 'cv', 'pdf', 'download'].some((term) => queryTerms.has(term))
+  ) {
+    sourceBoost *= 1.4;
+  }
+  if (
     chunk.href === '/projects/cs-ircfs' &&
     queryTerms.has('architecture')
   ) {
@@ -327,6 +440,15 @@ function isFollowUp(query: string) {
   );
 }
 
+const GENERIC_QUERY_TERMS = new Set([
+  'detail',
+  'limitation',
+  'result',
+  'method',
+  'outcome',
+  'project',
+]);
+
 export function retrieveSources(
   query: string,
   context?: string,
@@ -336,7 +458,14 @@ export function retrieveSources(
   const contextualQuery = context && isFollowUp(normalized)
     ? `${context.slice(0, 240)} ${normalized}`
     : normalized;
-  if (!normalized || !normalizeQuery(contextualQuery).length) return [];
+  const normalizedTerms = normalizeQuery(contextualQuery);
+  if (
+    !normalized ||
+    !normalizedTerms.length ||
+    normalizedTerms.every((term) => GENERIC_QUERY_TERMS.has(term))
+  ) {
+    return [];
+  }
   const queryTerms = weightedQueryTerms(contextualQuery);
   const ranked = indexedChunks
     .map((chunk) => ({ ...chunk, score: scoreChunk(chunk, queryTerms) }))
@@ -362,16 +491,83 @@ const SUGGESTIONS: Record<string, string[]> = {
 };
 
 const PRIVATE_QUERY =
-  /\b(passport|national\s+id|identification\s+number|private\s+phone|personal\s+phone|telephone\s+number|home\s+address|secret|password)\b/i;
+  /\b(passport|national\s+id|identification\s+number|social\s+security|private\s+phone|personal\s+phone|mobile\s+number|phone\s+number|telephone\s+number|home\s+address|street\s+address|private\s+contact|personal\s+reference|secret|password)\b|\b(?:private|personal|family)\b[\s\S]{0,30}\breference\b/i;
+const PROMPT_INJECTION_QUERY =
+  /\b(ignore|disregard|override|bypass|forget)\b[\s\S]{0,100}\b(previous|system|developer|assistant|safety|instructions|prompt|rules)\b|\b(reveal|show|print|repeat|expose|export)\b[\s\S]{0,80}\b(system\s+prompt|developer\s+instructions|hidden\s+(?:instructions|prompt)|private\s+data)\b/i;
+const FABRICATION_QUERY =
+  /\b(invent|fabricate|make\s+up|create\s+fake)\b[\s\S]{0,80}\b(citation|source|publication|result|achievement|claim)\b/i;
+const NON_SPECIFIC_EVIDENCE_TERMS = new Set([
+  'alliance',
+  'irigenera',
+  'professional',
+  'portfolio',
+  'listed',
+  'documented',
+  'current',
+  'exact',
+  'specific',
+  'one',
+  'best',
+  'there',
+  'happen',
+  ...GENERIC_QUERY_TERMS,
+]);
+
+function extractRelevantAnswer(
+  text: string,
+  query: string,
+  context?: string,
+): string {
+  const contextualQuery =
+    context && isFollowUp(query) ? context.slice(0, 240) + ' ' + query : query;
+  const queryTerms = weightedQueryTerms(contextualQuery);
+  const selected = text
+    .split(/(?<=[.!?])\s+/)
+    .map((sentence, index) => {
+      const uniqueTerms = new Set(tokenizeDocument(sentence));
+      let score = 0;
+      for (const term of uniqueTerms) {
+        if (!NON_SPECIFIC_EVIDENCE_TERMS.has(term)) {
+          score += queryTerms.get(term) ?? 0;
+        }
+      }
+      return { sentence, index, score };
+    })
+    .filter(({ sentence, score }) => sentence.length > 16 && score > 0)
+    .sort((left, right) => right.score - left.score || left.index - right.index)
+    .slice(0, 2)
+    .sort((left, right) => left.index - right.index);
+  return selected.map(({ sentence }) => sentence).join(' ');
+}
+
+function hasSpecificSourceEvidence(
+  text: string,
+  query: string,
+  context?: string,
+): boolean {
+  const contextualQuery =
+    context && isFollowUp(query) ? context.slice(0, 240) + ' ' + query : query;
+  const queryTerms = normalizeQuery(contextualQuery).filter(
+    (term) => !NON_SPECIFIC_EVIDENCE_TERMS.has(term),
+  );
+  if (!queryTerms.length) return false;
+  const sourceTerms = new Set(tokenizeDocument(text));
+  return queryTerms.some((term) => sourceTerms.has(term));
+}
 
 export function answerQuestion(query: string, previousQuery?: string): Answer {
   const cleaned = query.trim().slice(0, 500);
-  if (!cleaned || PRIVATE_QUERY.test(cleaned)) {
+  if (
+    !cleaned ||
+    PRIVATE_QUERY.test(cleaned) ||
+    PROMPT_INJECTION_QUERY.test(cleaned) ||
+    FABRICATION_QUERY.test(cleaned)
+  ) {
     return {
-      text: 'I can only search the public professional information on this site. I don’t retrieve private contact details or identity information.',
+      text: 'I can only answer from public portfolio material. I cannot provide hidden instructions or private information.',
       href: '/privacy',
       label: 'Privacy notice',
-      sources: [{ href: '/privacy', label: 'Privacy notice', title: 'Privacy notice' }],
+      sources: [],
       suggestions: ['What professional information is public?', 'How can I contact Alliance?'],
       abstained: true,
     };
@@ -388,14 +584,33 @@ export function answerQuestion(query: string, previousQuery?: string): Answer {
     };
   }
   const lead = matches[0];
-  const supporting = matches.slice(1, 3);
+  const pageText = publicKnowledgeBase
+    .filter((chunk) => chunk.href === lead.href)
+    .map((chunk) => chunk.text)
+    .join(' ');
+  const excerpt = extractRelevantAnswer(pageText, cleaned, previousQuery);
+  if (
+    !hasSpecificSourceEvidence(pageText, cleaned, previousQuery) ||
+    !excerpt ||
+    (/\b(how many|how much|number of|count of)\b/i.test(cleaned) &&
+      !/\b(?:\d[\d,]*(?:\.\d+)?|zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen)\b/i.test(
+        excerpt,
+      ))
+  ) {
+    return {
+      text: 'I couldn’t find a reliable answer in the public portfolio content. Try asking about a specific project, qualification, skill or role.',
+      href: '/projects',
+      label: 'Browse projects',
+      sources: [],
+      suggestions: ['What is Alliance’s education?', 'Tell me about CS-IRCFS.'],
+      abstained: true,
+    };
+  }
   return {
-    text: [lead, ...supporting]
-      .map((match) => match.text)
-      .join('\n\n'),
+    text: excerpt,
     href: lead.href,
     label: lead.label,
-    sources: matches.map(({ href, label, title }) => ({ href, label, title })),
+    sources: [{ href: lead.href, label: lead.label, title: lead.title }],
     suggestions: SUGGESTIONS[lead.href] ?? [
       'What are the project limitations?',
       'What related experience is documented?',

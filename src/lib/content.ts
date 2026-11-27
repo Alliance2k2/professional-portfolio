@@ -1,3 +1,5 @@
+import { projectImages, type ProjectImage } from './project-images';
+
 export const profile = {
   name: 'Irigenera Alliance',
   location: 'Kigali, Rwanda',
@@ -61,7 +63,7 @@ export type Project = {
   objectives?: string[];
   architecture?: { stage: string; detail: string }[];
   architectureSource?: string;
-  gallery?: { src: string; alt: string; caption: string; synthetic?: boolean }[];
+  gallery?: ProjectImage[];
   liveDemo?: { href: string; label: string };
   technicalChallenges?: string[];
   lessonsLearned?: string[];
@@ -98,22 +100,31 @@ export const projects: Project[] = [
       { stage: 'Spatial data', detail: 'PostgreSQL and PostGIS' },
       { stage: 'Review', detail: 'District dashboards and case workflows' },
     ],
-    architectureSource: 'Architecture summarized from the inspected public repository README.',
+    architectureSource:
+      'Architecture summarized from the inspected public repository README.',
     gallery: [
+      ...projectImages['cs-ircfs'],
       {
         src: '/projects/cs-ircfs-dashboard.jpg',
+        width: 1440,
+        height: 900,
         alt: 'CS-IRCFS Bugesera District decision-support dashboard showing example reports and irrigation metrics.',
-        caption: 'District decision-support dashboard from the public CS-IRCFS repository.',
+        caption:
+          'District decision-support dashboard from the public CS-IRCFS repository.',
         synthetic: true,
       },
       {
         src: '/projects/cs-ircfs-trends.jpg',
+        width: 1440,
+        height: 900,
         alt: 'CS-IRCFS trends screen with example report, rainfall, case and harvest charts.',
         caption: 'Trends view from the public CS-IRCFS repository.',
         synthetic: true,
       },
       {
         src: '/projects/cs-ircfs-monthly-report.jpg',
+        width: 1440,
+        height: 1100,
         alt: 'CS-IRCFS monthly report with example agriculture and irrigation summaries.',
         caption: 'Monthly report view from the public CS-IRCFS repository.',
         synthetic: true,
@@ -138,6 +149,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'cs-evidence-assistant',
+    gallery: projectImages['cs-evidence-assistant'],
     title: 'Evidence-Grounded Assistant for Field Teams',
     subtitle: 'Answers grounded in sources.',
     category: 'Applied AI',
@@ -168,6 +180,8 @@ export const projects: Project[] = [
   },
   {
     slug: 'financial-stability-africa',
+    gallery: projectImages['financial-stability-africa'],
+    repo: 'https://github.com/Alliance2k2/African-Financial-Crises-Analysis',
     title: 'Financial Stability Analysis Across African Economies',
     subtitle: 'Signals of financial instability.',
     category: 'Data science',
@@ -182,7 +196,7 @@ export const projects: Project[] = [
       'Compare classification approaches using the evaluation described in the CV.',
     ],
     contribution:
-      'The CV describes the country-year analysis, comparison of three model families and an interactive Streamlit dashboard. The underlying artifacts are not available for independent review.',
+      'The CV describes the country-year analysis and model comparison. The project repository and local analysis package provide original charts, notebook outputs and Streamlit dashboard code.',
     futureImprovements: [
       'Review the original notebook, data provenance and validation design before interpreting the reported ROC-AUC.',
     ],
@@ -191,16 +205,18 @@ export const projects: Project[] = [
     method:
       'Integrated 1,059 country-year observations from 13 African countries across 1860–2014 and compared logistic regression, random forest and gradient boosting.',
     implementation:
-      'The CV describes a Streamlit dashboard for interactive crisis-risk exploration. The source repository and dashboard have not been supplied for independent implementation review.',
+      'The inspected project contains exploratory charts, an executed notebook, classifier comparison code and a Streamlit dashboard for interactive crisis-risk exploration.',
     results:
-      'The CV reports up to 0.89 ROC-AUC. The precise model, validation procedure and test split behind that result require review of the original report before interpreting it as predictive performance.',
+      'Original country-level crisis charts and saved ROC curves are available below. Model code uses a stratified random 75/25 train/test split; saved scores describe this historical classification exercise, not validated future forecasting.',
     limitations:
-      'Underlying notebook, dataset provenance, model-level scores, validation design, dashboard screenshots and reproducibility materials have not been supplied.',
+      'The analysis has not been independently rerun here. Country and temporal dependence are not held out, and contemporaneous crisis indicators limit early-warning interpretation. A saved dashboard screenshot is unavailable.',
     source:
-      'Supplied CV, July–August 2026. Reported dataset and model results are not independently verified.',
+      'CV, public African-Financial-Crises-Analysis repository and local analysis package inspected 26 November 2026.',
   },
   {
     slug: 'malaria-functional-analysis',
+    gallery: projectImages['malaria-functional-analysis'],
+    repo: 'https://github.com/Alliance2k2/my_thesis',
     title: 'Functional Data Analysis of Malaria Incidence',
     subtitle: 'Understanding malaria through time.',
     category: 'Research',
@@ -210,7 +226,7 @@ export const projects: Project[] = [
     tags: ['R', 'Functional Data Analysis', 'Statistics'],
     technologies: ['R', 'Functional Data Analysis', 'Statistics'],
     contribution:
-      'The CV identifies this as Alliance’s MSc research topic. The thesis manuscript is needed to verify the final analysis and findings.',
+      'The CV identifies this as Alliance’s MSc research. The local thesis and revised manuscript package contain the aggregate research figures presented below; publication and review status remain separate.',
     objectives: [
       'Examine temporal patterns, seasonality and regional variation in malaria incidence.',
     ],
@@ -220,18 +236,19 @@ export const projects: Project[] = [
     problem:
       'Study patterns in malaria incidence over time and across regions rather than considering each observation in isolation.',
     method:
-      'Functional Data Analysis. The supplied brief identifies B-spline smoothing, functional derivatives, principal components and clustering; the final thesis is needed to verify the exact analysis pipeline.',
+      'Penalized B-spline smoothing, functional derivatives, clustering and sensitivity checks for national modeled incidence; survey-weighted regional positivity estimates and exploratory functional principal components for three Rwanda survey waves.',
     implementation:
-      'The CV confirms the research topic and temporal, seasonal and regional scope. Code, figures and the thesis manuscript have not been supplied.',
+      'R analysis using fda, survey and ggplot2, with aggregate figures and a maintained manuscript package. The national modeled-incidence analysis and regional child microscopy-positivity analysis use distinct outcomes.',
     results:
-      'Research topic verified against the CV. No numerical findings or publication status are asserted.',
+      'Original national trajectory and regional estimate figures are shown below. The work is research under review; no publication acceptance or causal intervention effect is asserted.',
     limitations:
-      'Thesis PDF, reproducible code, figures and publication information are awaiting review.',
+      'The manuscript is not cleared for journal submission. Ethics determination, survey-denominator/subsample documentation and full isolated dependency restoration remain unresolved. Three regional waves support descriptive profiles rather than continuous transmission dynamics.',
     source:
-      'Supplied CV; methodological detail from the development brief is explicitly awaiting thesis verification.',
+      'CV and local My_Thesis aggregate manuscript figures and review documentation inspected 26 November 2026. Public repository content may lag the local review package.',
   },
   {
     slug: 'arrowstack-identity',
+    gallery: projectImages['arrowstack-identity'],
     title: 'Role-Based Identity & Authentication Microservice',
     subtitle: 'Identity with accountability built in.',
     category: 'Software engineering',
@@ -246,7 +263,8 @@ export const projects: Project[] = [
       { stage: 'Data access', detail: 'Prisma ORM' },
       { stage: 'Database', detail: 'PostgreSQL account and session records' },
     ],
-    architectureSource: 'High-level architecture summarized from the inspected public repository README.',
+    architectureSource:
+      'High-level architecture summarized from the inspected public repository README.',
     objectives: [
       'Support validated account registration and role-based access.',
       'Make refresh-token rotation, replay detection and revocation traceable.',
@@ -265,7 +283,37 @@ export const projects: Project[] = [
     source: 'CV and repository README inspected 24 November 2026.',
   },
   {
+    slug: 'arrowstack-task-manager',
+    title: 'Arrowstack Task Management System',
+    subtitle: 'Clear priorities. Steady progress.',
+    category: 'Software engineering',
+    status: 'Portfolio implementation',
+    summary:
+      'A private task workspace with status summaries, priorities, deadlines, search and account ownership controls.',
+    tags: ['React', 'TypeScript', 'Express', 'Prisma', 'PostgreSQL'],
+    gallery: projectImages['arrowstack-task-manager'],
+    objectives: [
+      'Give each signed-in user a private workspace for creating and organizing tasks.',
+      'Make task status, priority and deadlines easy to review without exposing other users’ records.',
+    ],
+    problem:
+      'Keep personal tasks organized while enforcing account ownership throughout the application.',
+    method:
+      'A React interface backed by a TypeScript/Express API, Prisma data models and PostgreSQL. Ownership checks scope task operations; stale concurrent edits return a conflict response.',
+    implementation:
+      'The repository documents task creation, editing and deletion, status and priority filters, deadline tracking, search, pagination and account summaries. Authentication patterns were adapted from the separate Arrowstack identity project.',
+    results:
+      'The supplied screenshot shows the implemented initial workspace, including summary cards, task creation and filtering controls. Zero task counts describe the empty account, not a performance benchmark.',
+    limitations:
+      'No productivity improvement or production deployment is claimed. Team sharing, reminders, password reset, email verification and MFA are outside the documented implementation.',
+    repo: 'https://github.com/Alliance2k2/arrowstack-task-management-system',
+    source:
+      'Public repository README previously inspected and candidate-supplied application screenshot dated 26 November 2026.',
+  },
+  {
     slug: 'last-mile-logistics',
+    gallery: projectImages['last-mile-logistics'],
+    repo: 'https://github.com/Alliance2k2/amalitech',
     title: 'Last-Mile Delivery Performance Analytics',
     subtitle: 'From delivery data to operational insight.',
     category: 'Analytics',
@@ -276,7 +324,7 @@ export const projects: Project[] = [
     technologies: ['Python', 'SQL', 'Streamlit'],
     duration: 'May–June 2026',
     contribution:
-      'The CV records an analysis and Streamlit KPI dashboard using the Brazilian Olist dataset. Detailed findings and artifacts were not supplied.',
+      'The project repository documents the Olist delivery audit, a Streamlit KPI dashboard and product-category risk analysis, with original chart exports and aggregate summary tables.',
     objectives: [
       'Explore delivery performance and its relationship to customer satisfaction.',
     ],
@@ -285,15 +333,17 @@ export const projects: Project[] = [
     method:
       'Relational data integration, cleaning, validation and feature engineering.',
     implementation:
-      'An operational KPI dashboard developed May–June 2026, as recorded in the CV.',
+      'The inspected amalitech repository contains a reproducible notebook, original chart exports and a Streamlit dashboard that reads aggregate summaries. Reviews are aggregated to one row per order before joining.',
     results:
-      'Dashboard and analysis confirmed by the CV. No business improvement metrics or public demonstration are available.',
+      'The aggregate tables contain 96,476 delivered orders, of which 7,827 were late or super late (8.1%). Mean review scores are 4.29/5 for on-time orders and 1.79/5 for super-late orders. Original charts are shown below.',
     limitations:
-      'Repository, screenshots and detailed findings have not been supplied.',
-    source: 'Supplied CV and project dataset description in the brief.',
+      'Missing actual delivery dates are excluded from delivered-order analysis. Descriptive associations do not establish causality or achieved business improvement; the full raw-data analysis has not been independently rerun here.',
+    source:
+      'CV, public amalitech repository and downloaded original charts and aggregate tables inspected 26 November 2026.',
   },
   {
     slug: 'production-optimization',
+    gallery: projectImages['production-optimization'],
     title: 'Production Optimization with Economic Functions',
     subtitle: 'A mathematical lens on production.',
     category: 'Research',
@@ -400,7 +450,7 @@ export type ResearchItem = {
   abstract?: string;
   methodology?: string[];
   equations?: { label: string; tex: string }[];
-  figures?: { src: string; alt: string; caption: string; synthetic?: boolean }[];
+  figures?: ProjectImage[];
   download?: { href: string; label: string };
   citation?: { apa?: string; bibtex?: string };
   publicationStatus?: string;
@@ -414,12 +464,23 @@ export const research: ResearchItem[] = [
     status: 'Master’s research',
     description:
       'Temporal dynamics, seasonality and regional variation in malaria incidence.',
-    body: 'Research recorded in the AIMS Rwanda MSc entry in the supplied CV. The thesis manuscript and publication details have not been supplied. No DOI, citation, or publication status is inferred.',
+    body: 'MSc research examining national modeled malaria incidence in five East African countries during 2000–2024 and exploratory regional child microscopy positivity in Rwanda across three survey waves. These are distinct outcomes. The local revised manuscript package provides the aggregate figures shown here; the work remains under review.',
     project: '/projects/malaria-functional-analysis',
-    publicationStatus: 'Not specified in the supplied materials.',
+    figures: projectImages['malaria-functional-analysis'],
+    methodology: [
+      'Penalized B-spline smoothing and functional derivatives for national trajectories.',
+      'Integrated-distance clustering and smoothing sensitivity analysis.',
+      'Survey-weighted regional child positivity estimates and exploratory functional principal components.',
+    ],
+    publicationStatus:
+      'Research under review; not cleared for journal submission.',
     materialsNote:
-      'The thesis manuscript, verified abstract, figures and public-safe PDF are awaiting review. No thesis results or publication status are asserted.',
-    researchInterests: ['Functional data analysis', 'Malaria incidence', 'Temporal statistics'],
+      'Selected aggregate figures are available here. Ethics determination, survey-denominator/subsample documentation and full isolated dependency restoration remain unresolved. No individual-level survey records or public manuscript download are included.',
+    researchInterests: [
+      'Functional data analysis',
+      'Malaria incidence',
+      'Temporal statistics',
+    ],
   },
   {
     slug: 'citizen-science',
@@ -429,10 +490,15 @@ export const research: ResearchItem[] = [
       'Community evidence, agricultural monitoring and accountable information systems.',
     body: 'As a Citizen Science Research Fellow at AIMS Rwanda, Alliance coordinates community-based agricultural research and feedback. The CV also documents a CS Assistant prototype using BM25 retrieval, citations and permissions before retrieval. Optional provider adapters are implemented in that separate project; this portfolio assistant uses deterministic local search.',
     project: '/projects/cs-ircfs',
+    figures: projectImages['cs-ircfs'],
     publicationStatus: 'Ongoing research; no publication status supplied.',
     materialsNote:
       'No reviewed abstract, research report or downloadable manuscript has been supplied for this portfolio.',
-    researchInterests: ['Citizen science', 'Agricultural resilience', 'Evidence-grounded systems'],
+    researchInterests: [
+      'Citizen science',
+      'Agricultural resilience',
+      'Evidence-grounded systems',
+    ],
   },
 ];
 export const professionalInterests = [

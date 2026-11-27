@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { PageIntro, Timeline } from '@/components/shared';
 import { ProjectBrowser } from '@/components/project-browser';
+import { ProjectPreview } from '@/components/project-preview';
 import { ContactForm } from '@/components/contact-form';
 import { PrintButton } from '@/components/print-button';
 import {
@@ -196,17 +197,20 @@ export default async function SectionPage({
       {section === 'projects' ? <ProjectBrowser projects={projects} /> : null}
       {section === 'research' ? (
         <>
-          <div className="project-grid">
+          <div className="project-grid project-image-list">
             {research.map((r) => (
               <Link
                 href={`/research/${r.slug}`}
                 className="project-card"
                 key={r.slug}
               >
-                <span className="eyebrow">{r.status}</span>
-                <h2>{r.title}</h2>
-                <p>{r.description}</p>
-                <span className="text-link">Explore research</span>
+                <ProjectPreview slug={r.project.split('/').pop() ?? ''} />
+                <div className="project-card-copy">
+                  <span className="eyebrow">{r.status}</span>
+                  <h2>{r.title}</h2>
+                  <p>{r.description}</p>
+                  <span className="text-link">Explore research</span>
+                </div>
               </Link>
             ))}
           </div>

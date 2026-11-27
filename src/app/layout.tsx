@@ -42,13 +42,13 @@ export default async function RootLayout({
     },
   };
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" data-theme="light" suppressHydrationWarning>
       <head>
         <script
           nonce={nonce}
           dangerouslySetInnerHTML={{
             __html:
-              "try{document.documentElement.dataset.theme=localStorage.getItem('ia-theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark')}catch{}",
+              "try{const saved=localStorage.getItem('ia-theme');document.documentElement.dataset.theme=saved==='dark'?'dark':'light'}catch{}",
           }}
         />
         <script

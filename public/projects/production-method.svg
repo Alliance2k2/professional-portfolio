@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">Production optimization method illustration</title><desc id="desc">Inputs and resource constraints inform CES or Cobb-Douglas models, followed by constrained optimization and interpretation. No estimated results are shown.</desc>
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#12372f"/><stop offset="1" stop-color="#0b202a"/></linearGradient></defs>
+<rect width="1200" height="675" rx="24" fill="url(#bg)"/>
+<g font-family="Arial,sans-serif"><text x="72" y="88" fill="#8bdfb5" font-size="19" letter-spacing="3">MATHEMATICAL RESEARCH / PRODUCTION</text><text x="72" y="151" fill="white" font-size="42" font-weight="700">Making resource choices explicit.</text>
+<path d="M360 325H410M790 325H840" stroke="#8bdfb5" stroke-width="3"/>
+<g fill="#1c463e" stroke="#4e8671" stroke-width="2"><rect x="70" y="245" width="290" height="165" rx="18"/><rect x="410" y="245" width="380" height="165" rx="18"/><rect x="840" y="245" width="290" height="165" rx="18"/></g>
+<g fill="white" font-size="28" text-anchor="middle" font-weight="700"><text x="215" y="304">Inputs</text><text x="600" y="304">Production model</text><text x="985" y="304">Optimization</text></g>
+<g fill="#c0d9cb" font-size="21" text-anchor="middle"><text x="215" y="348">Labor &amp; capital</text><text x="215" y="379">Resource constraints</text><text x="600" y="348">CES / Cobb–Douglas</text><text x="600" y="379">Output under constraints</text><text x="985" y="348">Lagrange / KKT</text><text x="985" y="379">Interpret choices</text></g>
+<text x="72" y="490" fill="#8bdfb5" font-size="24">A framework for studying constrained production decisions.</text><text x="72" y="583" fill="#adc4c3" font-size="19">Method illustration from the project brief. No fitted model or empirical results shown.</text></g></svg>

@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "evaluate:assistant": "vitest run --config vitest.evaluation.config.ts",
     "test:e2e": "playwright test"
   },
   "dependencies": {
